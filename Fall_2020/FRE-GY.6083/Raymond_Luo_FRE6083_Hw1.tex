@@ -1,0 +1,207 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\printanswers
+
+\begin{document}
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Assignment 1}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+
+\noindent {\bf Problem 1 (15 points):}
+
+Let $X_1, X_2, \cdots, X_n$ be $n$ independent Poisson random variables with parameters $\lambda_1,\lambda_2,\cdots\lambda_n$.
+
+\begin{enumerate}
+\item (10 points) Give the distribution of $X_1+X_2+\cdots+X_n$. Hint:  use the moment generating function of a Poisson distribution with parameter $\lambda$
+\[\Phi(t)=\mathbb{E}[e^{tX}]=e^{\lambda(e^t-1)}.\]
+  \begin{solution}
+    As per the fact that $\Phi(t)=\mathbb{E}[e^{tX}]=e^{\lambda(e^t-1)}$ for some Poisson distribution of parameter $\lambda$. We note that for $Z_{n} = X_1 + X_2 + \cdots + X_n$ that it has moment generating function
+    $\Phi(t) = \mathbb{E}[e^{tZ_n}] = \mathbb{E}[e^{t(X_1 + X_2 + \cdots + X_n)}] = \mathbb{E}[\Pi^n_{i=1} e^{tX_i}]$. Note that as $X_{i}$ are independent for all $i \in [1,n]$ and that for independent random variables $X$ and $Y$,
+    $\mathbb{E}[X \cdot Y] = \mathbb{E}[X] \cdot \mathbb{E}[Y]$,
+    we have that \\
+    $\Phi(t) = \mathbb{E}[\Pi^n_{i=1} e^{tX_i}] = \Pi^n_{i=1} \mathbb{E}[e^{tX_i}] = \Pi^n_{i=1} e^{\lambda_{i}(e^t-1)} = e^{\Sigma^{n}_{i=1} \lambda_{i}(e^t-1)}$. As this is
+    the moment generating function for a Poisson distribution of parameter $\lambda = \lambda_{1} + \lambda_{2} + \cdots + \lambda_{n}$
+  \end{solution}
+\item (5 points) What is the parameter of this distribution?
+  \begin{solution}
+    The parameter is $\lambda = \lambda_{1} + \lambda_{2} + \cdots + \lambda_{n}$
+  \end{solution}
+\end{enumerate}
+
+\bigskip
+
+\noindent {\bf Problem 2 (20 points)(adapted from J. Jacod, P. Protter, {\it Probability Essentials}):}
+
+Let $X_1,\cdots,X_n$ be independent and exponentially distributed random variables with parameter $\lambda$. Consider the sum
+\[Y_n=\Sigma_{i=1}^n X_i.\]
+
+Show that $Y_n$ has a gamma distribution with parameters $(n,\lambda)$.
+
+\begin{solution}
+  We first note that the exponential distribution with parameter $\lambda$ has moment generating function $\Phi(t) = \ee[e^{tx}] = \int e^{tx}f_X(x)dx =
+  \int_{0}^{\infty} e^{tx}\lambda e^{-\lambda x}dx = \lambda \int_{0}^{\infty} e^{(\lambda - t)x}dx = \lambda [\frac{1}{\lambda - t} e^{(\lambda - t)x}]^{\infty}_{0} = \frac{\lambda}{\lambda - t}$.
+  It then follows that for $Y_{n} = \Sigma_{i=1}^n X_{i}$, $Y_{n}$ has a moment generating function of $\Phi(t) = \ee[e^{tY_{n}}] = \ee[\Pi^{n}_{i=1} e^{tX_{i}}]$. As noted before, from independence
+  of $X_{i}$, $\Phi(t) = \Pi^{n}_{i=1} \ee[e^{tX_{i}}] = \Pi^{n}_{i=1} \frac{\lambda}{\lambda - t} = \big[ \frac{\lambda}{\lambda - t} \big]^{n} = \big[ \frac{\lambda - t}{\lambda} \big]^{-n}
+  = \big( 1 - \frac{t}{\lambda} \big)^{-n} = \big( 1 - \frac{2(n/\lambda)}{2n} t \big)^{-2n/2}$.
+\end{solution}
+
+\bigskip
+\noindent {\bf Problem 3 (30 points):}
+
+We consider the following linear factor model: we observe the daily log returns  $r_i$ of $N$ assets. We suppose that the returns are driven by $P$ common factors $Y_1,Y_2,\cdots, Y_P$ and a white noise process $\epsilon_i$ that is specific to each asset. We assume that the $P\times 1$ vector $Y=(Y_1,Y_2,\cdots, Y_P)^t$ has a  multi-normal distribution with  mean $P\times 1$  vector $\mu=(\mu_j)_{j=1\cdots P}$ and $P\times P$  covariance matrix $\Sigma=(\Sigma_{i,j})_{i,j=1\cdots P}$. Furthermore $\epsilon_1,\cdots,\epsilon_N$ are i.i.d with a standard normal distribution. We also assume that the variables $\epsilon_1,\cdots,\epsilon_N$ are independent of the variables $Y_1,\cdots,Y_P$. The model is written as
+
+\[r_i= \sum_{j=1}^P \beta_{i,j}Y_j+ \sigma_{i}\epsilon_i, \mbox{ where } i=1\cdots N, \]  where $\beta_{i,j}$ and $\sigma_i$ are given.
+
+We also consider the  $N\times P$ matrix, $\beta=(\beta_{i,j})$ and the $N\times 1$ vector $\sigma=(\sigma_i)$.
+\begin{enumerate}
+	\item (10 points) Compute the vector $R$ of expected returns
+	\[R=(\mathbb{E}[r_1],\mathbb{E}[r_2],\cdots,\mathbb{E}[r_N])^t\] in term of the matrix $\beta=(\beta_{i,j})_{i=1\cdots N,j=1\cdots P }$ and the vector $\mu$, assuming that they are known.
+    \begin{solution}
+      We note that for some $i \in [1,N]$, $\ee[r_{i}] = \ee[\sum_{j=1}^P \beta_{i,j}Y_j+ \sigma_{i}\epsilon_i] = \sum^{P}_{j = 1} \big(\ee[\beta_{i,j}Y_{j}]\big) + \ee[\sigma_{i}\epsilon_{i}]
+      = \sum_{j=1}^P \beta_{i,j} \mu_{j} + 0$. This follows from $\ee[Y_{j}] = \mu_{j}$ and $\ee[\epsilon_{i}] = 0$.
+      We can then proceed similarly for all $i \in [1,N]$ and capture this with: $R = \beta \mu$
+    \end{solution}
+  \item (20 points) Compute the $N\times N$ covariance matrix $C$ of the vector of returns $(r_i)_{i=1\cdots N}$ in term of the matrix $\beta$, the matrix $\Sigma$ and the $N\times N$ diagonal matrix $\text{Diag}(\sigma)$, whose diagonal is given by the vector $\sigma$.
+    \begin{solution}
+      We note that for some $i,j \in [1.N]$, $Cov(r_{i}, r_{j}) \\
+      = Cov(\sum_{m=1}^P \beta_{i,m}Y_i + \sigma_{i}\epsilon_{i}, \sum_{n=1}^P \beta_{n,j}Y_j + \sigma_{j}\epsilon_{j}) \\
+      = \sum_{m=1}^{P} \beta_{i,m} \big( \sum_{n=1}^P \beta_{j,n} Cov(Y_{i}, Y_{j}) + Cov(Y_{i}, \sigma_{j}\epsilon_{j}) \big)
+      + Cov(\sigma_{i}\epsilon_{i}, \sigma_{j}\epsilon_{j}) + \sum_{n} \beta_{j,n} Cov(\sigma_{i}\epsilon_{i}, Y_{j})$ \\
+      We then note that $\{\epsilon_{i}\}_{i}$ are i.i.d so $Cov(\sigma_{i}\epsilon_{i}, \sigma_{j}\epsilon_{j}) = 0$ whenever $i \neq j$. Likewise,
+      any $\epsilon_{i}$ is independent to $Y_{j}$ for all $i,j$ so $Cov(\sigma_{i}\epsilon_{i}, Y_{j}) = 0$. \\
+      We then have the two following situations:
+      \begin{enumerate}
+        \item $i = j$: $Cov(r_{i}, r_{j}) = \sum_{m}\sum_{n} \beta_{i,m} \beta_{i,n} Cov(Y_{i}, Y_{i}) + \sigma_{i}^{2} var(\epsilon_{i})$. As $var(\epsilon_{i}) = 1$ from $\epsilon_{i} \sim N(0,1)$,
+        $Cov(r_{i}, r_{i}) = \sum_{m}\sum_{n} \beta_{i,m} \beta_{i,n} Cov(Y_{i}, Y_{i}) + \sigma_{i}^{2}$.
+        \item $i \neq j$: $Cov(r_{i}, r_{j}) = \sum_{m}\sum_{n} \beta_{i,m} \beta_{j,n} Cov(Y_{i}, Y_{j})$
+      \end{enumerate}
+      We can recognize that as a whole, we note that this is $C = \beta \Sigma \beta^{T} + [Diag(\sigma)]^2$
+    \end{solution}
+\end{enumerate}
+\bigskip
+
+\noindent {\bf Problem 4 (35 points):}
+
+
+
+An asset price is modeled by using a sequence of  independent and identically distributed continuous random variables $X_1,X_2,\cdots$ with common density function $f$. We say that a record price occurs  at time $n$ if $X_n>\max(X_1,X_2\cdots,X_{n-1})$.
+\begin{enumerate}
+	\item (5 points) Compute $\mathbb{P}[\mbox{ a record price occurs at time }n]$. Justify your answer!
+
+    \begin{solution}
+      Let us denote $Y_{n}$ as indicator function of  when a record price occurs at a time $n$. We want to show that $\mathbb{P}[Y_{n}] = \frac{1}{n}$. This follows from the fact that as 
+our random variables $\{X_{i}\}_{i\in\nn}$ are identical and independent, at a given time $n$, each permutation of the order of the random variables ( i.e. a permutation of order $(X_{3}, X_{1}, \cdots ...)$ means we observe that $X_{3} < X_{1} < \cdots$) has an equal chance of occuring. It then follows that the probability that a record price occurs at time $n$ is the probability that we observe a permutation of the orders of the random variables with the last element being $X_{n}$. As there are $n!$ permutations and $(n-1)!$ permutations with the last element being $X_{n}$, 
+$\mathbb{P}[Y_{n}] = \frac{(n-1)!}{n!} = \frac{1}{n}$
+    \end{solution}
+
+	Next, consider the variable $Y_i$ defined as
+	\[Y_i=\left\{\begin{array}{cc}
+	1&\mbox{ if  a record occurs at time }$i$\\
+	0& \mbox{ otherwise}\end{array}\right.\]
+	\item (5 points) Let $Z_n$ be the number of records by time $n$. Express the variable $Z_n$ in terms of the variables $Y_i$.
+    \begin{solution}
+      $Z_{n} = \Sigma^{n}_{i=1} Y_{i}$.
+    \end{solution}
+	\item (5 points) Compute $\mathbb{E}[Y_i]$.
+    \begin{solution}
+      $\mathbb{E}[Y_{i}] = 1\cdot \mathbb{P}[Y_{i} = 1] + 0 \cdot \mathbb{P}[Y_{i} = 0] = \frac{1}{i}$.
+    \end{solution}
+	\item (5 points) Give the expected number of records by time $n$. Hint: do not attempt to calculate the sum.
+    \begin{solution}
+      $\mathbb{E}[Z_{n}] = \mathbb{E}[\Sigma^{n}_{i} Y_{i}]$. We note that by the linearity of expectation that, $\mathbb{E}[\Sigma^{n}_{i=1} Y_{i}] = \Sigma^{n}_{i=1} \mathbb{E}[Y_{i}]
+        = \Sigma^{n}_{i=1} \frac{1}{i}$.
+    \end{solution}
+	\item (10 points) Compute $var[Y_i]$.
+    \begin{solution}
+      $var[Y_i] = \ee[Y_{i}^2] - (\ee[Y_{i}])^{2} = \big( 1 \cdot \mathbb{P}[Y_{i} = 1] + 0 \cdot \mathbb{P}[Y_{i} = 0] \big) - (\frac{1}{i})^{2} = \frac{1}{i} - \frac{1}{i^2} = \frac{i-1}{i^{2}}$.
+    \end{solution}
+  \item (10 points) Calculate the variance of the number of records by time $n$. Hint: do not attempt to calculate the sum.
+    \begin{solution}
+      $var[Z_{n}] = var[\Sigma^{n}_{i=1} Y_{i}]$. Note that $var[\Sigma^{n}_{i=1} Y_{i}] \\
+= \Sigma^{n}_{i=1} var[Y_{i}] + \Sigma_{i<j} 2cov(Y_{i},Y_{j})
+      =\Sigma^{n}_{i=1} var[Y_{i}] + \Sigma_{i<j} 2\big( \ee[Y_{i}Y_{j}] - \ee[Y_{i}]\ee[Y_{j}] \big)$. We note that $\ee[Y_{i}Y_{j}] = 1\cdot \mathbb{P}[Y_{i} = 1, Y_{j} = 1] + 0 = \mathbb{P}[Y_{i} = 1, Y_{j} = 1]$.
+      As the occurrence of a record price at time $n$ does not influence the occurrence of a record price at time $m > n$, we note that the two events are independent so $\mathbb{P}[Y_{i}Y_{j}] = \mathbb{P}[Y_{i}]\mathbb{P}[Y_{j}]
+      =\frac{1}{i}\frac{1}{j}$. It follows that $\ee[Y_{i}Y_{j}] - \ee[Y_{i}]\ee[Y_{j}] = 0$ so $var[\Sigma^{n}_{i=1} Y_{i}]
+      = \Sigma^{n}_{i=1} var[Y_{i}] + \Sigma_{i<j} 2cov(Y_{i},Y_{j}) = \Sigma^{n}_{i=1} var[Y_{i}] = \Sigma^{n}_{i = 1} \frac{i-1}{i^{2}}$
+    \end{solution}
+\end{enumerate}
+
+\end{document}

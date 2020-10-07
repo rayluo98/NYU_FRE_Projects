@@ -1,0 +1,144 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Assignment 5}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1 (30 points):}
+  \par{We consider the 3-period name model seen in class with the parameters}
+\begin{equation*}
+  S_0 = 4, u = 2, d = 1/2, r = 1/5, K = 5
+\end{equation*}
+The price fo the underlying asset is denoted by $S_n$ for $n = 0,1,2,3$
+
+\begin{enumerate}
+  \item Compute the price of $V_0$, at time 0, of a European call option on the underlying asset $S_n$ with payoff
+    $V_3 = (S_3 - 2)^+$ at time 3.
+    \begin{solution}
+      We first note that the arbitrage free pricing of the option should be the expected 
+    \end{solution}
+  \item Give also the hedging strategy $\Delta_0$ at time 0.
+  \item Compute now the price of a Lookback option with payoff
+    \begin{equation*}
+      V_3  =\max_{0 \leq n \leq 3}(S_n - S_3)
+    \end{equation*}
+    for the same set of parameters
+  \item Give the hedging strategy $\Delta_0$ for the lookback option.
+\end{enumerate}
+
+\noindent {\bf Problem 2 (10 points):}
+  \par{Consider the one-period binomial tree model seen in class with $d = 1/2, u = 1.5, r = 1, S_0 = 3$. Is there an arbitrage
+    opportunity in this model? Can you exhibit such a strategy?}
+
+\noindent {\bf Problem 3 (10 points):}
+  \par{Consider the general one-period binomial tree model seen in class with payoff $V_1 = S_1$ (in other words we set the strike price
+  to 0, K = 0)}
+    \begin{enumerate}
+      \item Write the risk-neutral pricing formula giving the price $V_0$ at time 0, of this claim
+      \item What is the price?
+    \end{enumerate}
+
+\noindent {\bf Problem 4 (50 points) Asian Option:}
+  \par{Consider the 3-period model seen in class with $d = 1/2, u = 2, r = 1/4, S_0 = 4$ and consider the Asian option with payoff}
+    \begin{equation*}
+      V_3 = (\frac{1}{4}Y_3 - 4)^+
+    \end{equation*}
+  where the variable $Y_n$ is defined as
+    \begin{equation*}
+      Y_n = \sum^n_{k=0} S_k
+    \end{equation*}
+    \begin{enumerate}
+      \item Write a recursive formula for $V_n$ in terms of $V_{n+1}$ that will allow you to compute the price of the Asian option.
+      \item Provide a formula for the number of shares $\Delta_n = \delta_n(s,y)$ of underlying asset that should be held in the replicating portfolio at
+        time $n$ for $n = 0,1,2$
+      \item Use the algorithm developed in the first question to compute the price of the Asian option $V_0$ at time 0.
+    \end{enumerate}
+\noindent {\bf Optional Problem (0 credit):} Exercise 1.9 page 22 in the textbook by Shreve.
+
+\end{document}
