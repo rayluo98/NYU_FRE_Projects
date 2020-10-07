@@ -1,0 +1,184 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 3}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1:} Prove the "kurtosis" formula:
+
+\begin{equation*}
+  \sum^{n-1}_{j=0} \ee[(W(t_{j+1}) - W(t_{j}))^{4}] = \sum^{n-1}_{j=0} 3(t_{j+1} - t_{j})^2
+\end{equation*}
+
+\begin{solution}
+  It's sufficient to show that $\ee[(W(t_{j+1}) - W(t_{j}))^{4}] = 3(t_{j+1} - t_{j})^2$. As $W(t_{j+1}) - W(t_{j}) \sim N(\mu = 0, \sigma^{2} = t_{j+1}-t_{j}$,
+  to find $\ee[(W(t_{j+1}) - W(t_{j}))^{4}]$ is that same as finding the fourth moment of a normal distribution $X$ with mean $\mu = 0$ and variance $\sigma^{2} = t_{j+1}-t_{j}$.
+  To simplify our calculations, we proceed by finding the fourth moment of the standard normal distribution $Z$ and rescale it by $\sigma$. \\
+  We then have: \\
+  \begin{align*}
+    \ee[Z^{4}] &= \int_{\rr} x^4\frac{1}{\sqrt{2\pi}}e^{-x^2/2}dx = \frac{\int_{\rr} x^4\frac{1}{\sqrt{2\pi}}e^{-x^2/2}dx}{1} \\
+    &= \frac{\frac{1}{\sqrt{2\pi}} \int_{\rr} x^4 e^{-x^2/2}dx}{\int_{\rr}\frac{1}{\sqrt{2\pi}}e^{-x^2/2} dx} \text{ [From that integration over pdf of $Z$ is 1]} \\
+    &= \frac{\int_{\rr} x^4 e^{-x^2/2}dx}{\int_{\rr} e^{-x^2/2}dx} \\
+    &= \frac{[-x^{3}e^{-x^2/2}]^{\infty}_{-\infty} + \int_{\rr} 3x^2e^{-x^2/2}dx}{\int_{\rr} e^{-x^2/2}dx} \text{ [By integration by parts of numerator]} \\
+    &= \frac{0 + \int_{\rr} 3x^2e^{-x^2/2}dx}{\int_{\rr} e^{-x^2/2}dx} \text{ [Integral over odd function is 0]} \\
+    &= \frac{[-3xe^{-x^2/2}dx]^{\infty}_{\infty} + \int_{\rr}3xe^{-x^2/2}dx}{\int_{\rr} e^{-x^2/2}dx} \text{ [By integration by parts of numerator]} \\
+    &= \frac{0 + \int 3e^{-x^2/2}dx}{\int e^{-x^2/2}dx} \text{ [Integral over odd function is 0]}\\
+    &= 3
+  \end{align*}
+  We rescaling this by a factor of $\sigma$, we have that $\ee[X^{4}] = \ee[(\sigma\cdot Z)^{4}] = \sigma^{4} \ee[Z^{4}] = 3\sigma^{4} = 3(t_{j+1}-t_{j})^{2}$.
+\end{solution}
+
+\noindent {\bf Problem 2:} Let $W(t)$ be a Brownian motion. Check if the processes defined below are Brownian motions (check \textit{all} properties):
+
+\begin{enumerate}
+  \item $-W(t), t\geq0$
+  \item $cW(\frac{t}{c^2})$
+\end{enumerate}
+
+\begin{solution}
+  \begin{enumerate}
+    \item $-W(t), t\geq0$
+      \begin{enumerate}[label = (\roman*)]
+        \item $-W(0) = -0 = 0$
+        \item As the increments of $W(t)$ are independent, it is straightforward to see that $-W(t)$ are independent as a function of independent random variables.
+        \item As the normal distribution centered at $\mu = 0$ is symmetric at the origin, we note that $-W(t+s) - (-W(t)) = -(W(t+s)-W(t)) \sim N(0, s)$
+        \item As $f(x) = -x$ is a continuous function and the composition of continuous functions is continuous, $-W(t)$ is continuous.
+      \end{enumerate}
+    This is a Wiener Process.
+    \item $cW(\frac{t}{c^2})$ \\
+      Fix $c \in \rr \setminus \{0\}$.
+      \begin{enumerate}[label = (\roman*)]
+        \item $cW(\frac{0}{c^{2}}) = cW(0) = 0$
+        \item As the increments of $W(t)$ are independent, we note that for all $i,j,k,l \in \rr$, $W_{i} - W{j}$, $W_{k} - W{l}$ are independent. Thus note that
+          $cW(\frac{j}{c^2}) - cW(\frac{k}{c^2}) = c\big(W(\frac{j}{c^2}) - W(\frac{k}{c^2})\big) = c\big(W(\frac{j}{c^2}) - W(\frac{k}{c^2})\big)$ is independent of
+          $cW(\frac{i}{c^2}) - cW(\frac{l}{c^2}) = c\big(W(\frac{i}{c^2}) - W(\frac{l}{c^2})\big)$.
+        \item We have that $\forall \epsilon > 0$, $cW(\frac{t+\epsilon}{c^2}) - cW(\frac{t}{c^2}) = c(W(\frac{t+\epsilon}{c^2})-W(\frac{t}{c^2})) \sim N(\mu = 0, \sigma^{2} = \epsilon)$
+        \item As scaling a continuous function maintains its continuous, $cW(\frac{t}{c^2})$ is still continuous.    
+      \end{enumerate}
+      This is a Wiener Process.
+  \end{enumerate}
+\end{solution}
+
+\noindent {\bf Problem 3:} Consider a sequence $X_{n}$ of r.v. such that there is a constant $k$ with $\ee[X_{n}] \rightarrow k$, $n \rightarrow \infty$ and
+$Var(X_{n}) \rightarrow 0$, $n \rightarrow \infty$. Show that $X_{n}$ converges to $k$ in the mean square sense. We use this statement in this last lecture while
+computing quadratic variation of Brownian motion.
+
+\begin{solution}
+  We first note that:
+  \begin{multline*}
+    \ee[(X_{n} - k)^2] = \ee[X_{n}^2 - 2k\cdot X_{n} + k^2] = \ee[X_{n}^2] - 2k\ee[X_{n}] + k^2 \\
+    = \ee[X_{n}^2] - \big(\ee[X_{n}]^2 - \ee[X_{n}]^2 \big) - 2k\ee[X_{n}] + k^2 \\
+    = Var[X_{n}] + \ee[X_{n}]^2 - 2k\ee[X_{n}] + k^2 = Var[X_{n}] + \big(\ee[X_{n}] - k \big)^2
+  \end{multline*}
+  Taking limit of $n$ to infinity we have that:
+  \begin{align*}
+    \lim_{n \rightarrow \infty} \ee[(X_{n} - k)^2] = \lim_{n \rightarrow \infty} Var[X_{n}] + \lim_{n \rightarrow \infty} (\ee[X_{n}] - k )^2
+     = 0 + (k - k)^2 = 0
+  \end{align*}
+\end{solution}
+
+\noindent {\bf Problem 4:} Show that a monotone increasing function $f$ on interval $[a,b]$ has bounded variation.
+
+\begin{solution}
+  This is straightforward from the definition of a monotone increasing function. As $f$ is monotone increasing, for $\forall x,y \in [a,b]$, $x < y$, $f(x) < f(y)$. This means that
+  $|f(y) - f(x)| = f(y) - f(x)$. From this we note that regardless of the partition we choose for our bounded variation:
+  \begin{align*}
+    V^b_a(f) = \sup_{P\in \mathcal{P}} \sum^{n_{p} - 1}_{i=0} |f(x_{i+1}) - f(x_{i})| = \sup_{P\in \mathcal{P}} \sum^{n_{p} - 1}_{i=0} f(x_{i+1}) - f(x_{i})
+  \end{align*}
+  With partition set \\
+  $\mathcal{P} = \{x_0, x_1, \cdots, x_{n_P} \mid \text{ $P$ is a partition over $[a,b]$ satisfying $x_{i} \leq x_{i+1}$ for $0 \leq i \leq n_{p}-1$}.\}$
+  Evidently, the above sum telescopes so that we have:
+  \begin{align*}
+    V^b_a(f) = f(b) - f(a) < \infty
+  \end{align*}
+  From this, we have that $f$ has bounded variation on $[a,b]$.
+\end{solution}
+
+
+\end{document}

@@ -1,0 +1,161 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\printanswers
+
+\begin{document}
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 1}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1:}
+Finish the problem from slide 14 we started in the class.
+\begin{enumerate}
+  \item List all the sets in $\sigma$-algebra in $\mathcal{F}$
+    \begin{solution}
+      $\mathcal{F} = \{\emptyset, \Omega, \{a\}, \{b\}, \{c\}, \{d\}, \{a,b\}, \{a,c\}, \{a,d\},$\\
+      $\{b,c\}, \{b,d\}, \{c,d\}, \{a,b,c\}, \{b,c,d\}, \{a,c,d\}, \{a,b,d\}, \{a,b,c\} \}$
+    \end{solution}
+  \item List all the sets $\sigma(X)$
+    \begin{solution}
+      $\sigma(X) = \{\emptyset, \Omega, \{a,b\}, \{c,d\}\}$
+    \end{solution}
+  \item Define the r.v. $\ee[X|\sigma(Y))]$, so calculate it for $a,b,c,d$.
+    \begin{solution}
+      We note that $\pp(a) = \frac{3}{8}, \pp(b) = \frac{1}{8}, \pp(c) = \frac{1}{6}, \pp(d) = \frac{1}{3}$. \\
+      As $\ee[Y|X] = \Sigma_{i \in \{-1,1\}} \ee[Y|X = i]\id_{i}(x)$, we consider the following: \\
+      If $X = 1$, $\pp(X^{-1}(1) = a) = \frac{\pp(a)}{\pp(a) + \pp(b)} = \frac{3}{4}, \pp(X^{-1}(1) = b) = \frac{1}{4}$\\
+      So, $\ee[Y|X = 1] = (-1 \cdot \frac{3}{4} + 1 \cdot \frac{1}{4})
+      = -\frac{1}{2}$ \\
+      If $X = -1$, $\pp(X^{-1}(-1) = c) = \frac{\pp(c)}{\pp(c) + \pp(d)} = \frac{1}{3}, \pp(X^{-1}(1) = d) = \frac{2}{3}$\\
+      So, $\ee[Y|X = -1] = (1 \cdot \frac{1}{3} - 1 \cdot \frac{2}{3})
+      = -\frac{1}{3}$
+    \end{solution}
+\end{enumerate}
+
+\noindent {\bf Problem 2:}
+\begin{enumerate}
+  \item Suppose that $(\Omega, \mathcal{F}, \mathcal{P})$ is a probability space where $\Omega = \{a,b,c,d,e,f\}$,
+    $\mathcal{F}$ is $\sigma$-algebra, and $\mathcal{P}$ is uniform (so $\mathcal{P}(a) = \mathcal{P}(b) = \cdots = \frac{1}{6})$.
+  \item Let $X, Y, Z$ be r.v. given by
+    \begin{multline*}
+      X(a) = 1, X(b) = X(c) = 3, X(d) = X(e) = 5, X(f) = 7 \\
+      Y(a) = Y(b) = 2, Y(c) = Y(d) = 1, Y(e) = Y(f) = 7 \\
+      Z(a) = Z(b) = Z(c) = Z(d) = 3, Z(e) = Z(f) = 2
+    \end{multline*}
+\end{enumerate}
+
+\begin{enumerate}
+  \item Write down $\sigma(X), \sigma(X), \sigma(Z)$. Are there any relationships between them?
+    \begin{solution}
+      \begin{multline*}
+        \sigma(X) = \{\emptyset, \Omega, \{a\}, \{b,c\}, \{d,e\}, \{f\}, \{a,b,c\}, \{a,d,e\}, \{a,f\}, \\
+            \{b,c,d,e\}, \{b,c,f\}, \{d,e,f\},
+            \{a,b,c,d,e\}, \{b,c,d,e,f\}, \{a,d,e,f\}, \{a,b,c,f\}\} \\
+        \sigma(Y) = \{\emptyset, \Omega, \{a,b\}, \{c,d\}, \{e,f\}, \{a,b,c,d\}, \{a,b,e,f\}, \{c,d,e,f\}\}\\
+        \sigma(Z) = \{ \emptyset, \Omega, \{a,b,c,d\}, \{e,f\} \}
+      \end{multline*}
+    \end{solution}
+  \item Define a r.. $\ee[X \mid \sigma(Y)]$
+    \begin{solution}
+      As $\ee[X|Y] = \Sigma_{i \in \{1,2,7\}} \ee[X|Y = i]\id_{i}(y)$, we consider the following: \\
+      If $Y = 1$, $\pp(Y^{-1}(1) = c) = \frac{\pp(c)}{\pp(c) + \pp(d)} = \frac{1}{2}, \pp(Y^{-1}(1) = d) = \frac{1}{2}$\\
+      So, $\ee[X|Y = 1] = (X(c) \cdot \frac{1}{2} + X(d) \cdot \frac{1}{2}) = 3\cdot \frac{1}{2} + 5\cdot \frac{1}{2}
+      = 4$ \\
+      If $Y = 2$, $\pp(X^{-1}(2) = a) = \frac{\pp(a)}{\pp(a) + \pp(b)} = \frac{1}{2}, \pp(X^{-1}(2) = b) = \frac{1}{2}$\\
+      So, $\ee[X|Y = 2] = (X(a) \cdot \frac{1}{2} + X(b) \cdot \frac{1}{2}) = 2$ \\
+      If $Y = 7$, $\pp(Y^{-1}(7) = e) = \frac{\pp(e)}{\pp(e) + \pp(f)} = \frac{1}{2}, \pp(Y^{-1}(7) = f) = \frac{1}{2}$ \\
+      So, $\ee[X|Y = 7] = (X(e) \cdot \frac{1}{2} + X(f) \cdot \frac{1}{2}) = 6$ \\.
+    \end{solution}
+  \item Check directly the averaging property
+    \begin{equation*}
+      \ee[\ee[X \mid \sigma(Y)]] = \ee[X]
+    \end{equation*}
+
+    \begin{solution}
+      $\ee[\ee[X \mid \sigma(Y)]] = \Sigma_{i \in \{1,2,7\}} \ee[X|Y=i] \cdot \pp[Y=i]$. As $\pp[Y=i] = \frac{1}{3}$ for $i \in \{1,2,7\}$, we have that
+      $\ee[\ee[X \mid \sigma(Y)]] = \frac{1}{3}\cdot (4 + 2 + 6) = 4$. \\
+      We then note that: \\
+      $\ee[X] = \Sigma_{i \in \{a,b,c,d,e,f\}} \pp[i] \cdot X(i) = \frac{1}{6}(1+3+3+5+5+7) = \frac{24}{6} = 4$. \\
+      From this we have checked the averaging property.
+    \end{solution}
+\end{enumerate}
+
+\end{document}

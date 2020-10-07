@@ -1,0 +1,134 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 5}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1}
+\par{Using the differentiation rules, find the following differentials:}
+
+\begin{enumerate}[label = (\alph*)]
+  \item $d(3W^{3}(t)  + e^{6W(t)})$
+  \item $d(\frac{1}{t} \int^{t}_{0} W(u)du)$
+  \item $d(t^3 cos(2W(t)))$
+  \item $d(\frac{1}{t}\int^{t}_0 e^{W(u)}du)$
+  \item $d(W(t)e^{W(t)})$
+\end{enumerate}
+
+\noindent {\bf Problem 2}
+Let $Z(T) = \int^{T}_{0} W(u) du$ be the integrated BM, and $I(T) = \int^{T}_{0} tdW(t)$
+  \begin{enumerate}[label = (\alph*)]
+    \item Using integration by parts, find relationship bewteen $I(T)$ and $Z(T)$
+    \item Using the relationship, compute the covariance between $I(T)$ and $Z(T)$
+    \item Calculate the correlation between $I(T)$ and $Z(T)$
+  \end{enumerate}
+
+\noindent {\bf Problem 3}
+Let $f(t) = e^{\alpha t}$, $g(x) = cos(x)$. Using integration by parts, calculate the stochastic integral
+  \begin{equation*}
+    \int^T_0 e^{\alpha t} cos(W(t)) dW(t)
+  \end{equation*}
+Which choice of $\alpha$ makes it very simple?
+
+\noindent {\bf Problem 4}
+Using the product of differentiation to calculate $d(X(t), Y(t))$, write down a general formula for integration by parts |
+integrate both sides of a differential of a product of two stochastic processes $X(t)Y(t)$|
+
+\begin{equation*}
+  \int^T_0 Y(t) dX(t) = \cdots
+\end{equation*}
+Using the integration by parts, calculate 2 stochastic integrals:
+
+\begin{enumerate}
+  \item $\int^T_0 W(t)dW(t)$
+  \item $\int^T_0 W^2(t)dW(t)$
+\end{enumerate}
+
+
+\end{document}
