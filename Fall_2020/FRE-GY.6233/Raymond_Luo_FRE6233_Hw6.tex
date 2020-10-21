@@ -1,0 +1,260 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 6}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1} Find all solutions of heat equation of the following type:
+\begin{equation*}
+  \phi(t,x) = a(t)b(x)
+\end{equation*}
+
+\begin{solution}
+  Given heat equation $\frac{\partial \phi}{\partial t} = c \cdot \nabla \phi(t,x)$ [in class we
+  used $c = \frac{1}{2}$] and assuming solutions of the form $\phi(t,x) = a(t)b(x)$, we have
+  that: $a'(t)b(x) = c \cdot a(t)b''(x)$. For nontrivial solutions of $\phi(t,x)$ (as in $\phi \neq {\bf 0}$),
+  $\frac{1}{c}\frac{a'(t)}{a(t)} = \frac{b''(x)}{b(x)} = \lambda$ for some constant $\lambda$. It is direct to observe that
+  $a'(t) = c\cdot\lambda\cdot a(t) \Rightarrow a(t) = A_1 e^{c\cdot\lambda t}$ for some constant $A_1$; however, we have the following cases for $b(x)$:
+  \begin{enumerate}
+    \item $\lambda > 0$: \\
+      $b''(x) - b(x)\lambda = 0 \Rightarrow b(x) = B_1e^{\sqrt{\lambda}x} + B_2e^{-\sqrt{\lambda}x}$ for some constants $B_1, B_2$\\
+    \item $\lambda = 0$: \\
+      $b''(x) = 0 \Rightarrow b(x) = B_1x + B_2$ for some constants $B_1, B_2$\\
+    \item $\lambda < 0$: \\
+      $b''(x) - b(x)\lambda = 0 \Rightarrow b(x) = B_1cos(\sqrt{-\lambda}x) + B_2sin(-\sqrt{\lambda}x)$ for some constants $B_1, B_2$\\
+  \end{enumerate}
+  Note that the above cases of $b(x)$ can be concisely written in considering Euler's formula and expressing it using complex form.\\
+
+\end{solution}
+
+\noindent {\bf Problem 2} Using the heat equation method, calculate the following integral:
+\begin{equation*}
+  \int^T_0 e^{\frac{t}{2}} cos(W(t))dW(t)
+\end{equation*}
+
+\begin{solution}
+  We note from problem 1 that $\phi(t,x) = a(t)b(x)$ where $a(t) = e^{\frac{t}{2}}$, $b(x) = sin(x)$ is a solution to a heat equation
+  with $c = \frac{1}{2}$. We then note
+  that as $b'(x) = cos(x)$, we can rewrite $\int^T_0 e^{\frac{t}{2}} cos(W(t))dW(t) = \int^T_0 f(t, W(t)) dW(t)$ where
+  $f(t,x) = \frac{\partial \phi}{\partial x}$. It then follows that $d(\phi(t,W(t))) = \partial_x \phi(t, W(t))dW(t) + (\partial_t \phi
+  + \frac{1}{2} \partial^2_x \phi) dt = \partial_x \phi(t, W(t))dW(t) = f(t, W(t)$ as the $dt$ terms go to zero according to the heat equation.
+  We then have $\int^T_0 e^{\frac{t}{2}} cos(W(t))dW(t) = \int^T_0 d(\phi(t,W(t))) = \phi(T, W(T)) - \phi(0, W(0)) =
+  e^{\frac{T}{2}}sin(T) - e^{0}sin(0) = e^{\frac{T}{2}}sin(T)$
+\end{solution}
+
+\noindent {\bf Problem 3}
+
+\begin{enumerate}
+  \item Prove formula (7) for variance on slide 6 in the last lecture
+    \begin{solution}
+      We begin by observing that for $dX(t) = \alpha(t)X(t) dt + b(t)dW(t)$, we have by Ito's lemma with $f(x) = x^2$:
+      \begin{align*}
+        dX^2(t) &= \frac{\partial f}{\partial x}dx + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}dx^2 \\
+        &= \frac{\partial f}{\partial x}(\alpha(t)X(t) dt + b(t)dW(t)) + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}
+        (\alpha(t)X(t) dt + b(t)dW(t))^2 \\
+        &= 2X(t)\cdot(\alpha(t)X(t) dt + b(t)dW(t)) + \\
+        & \quad + 1\cdot(\alpha^2(t)X^2(t)dt^2 + 2\alpha(t)X(t)b(t)d(t)dW(t) + b^2(t)dW^2(t)) \\
+        &= 2\alpha(t)X^2(t)dt + 2b(t)X(t)dW(t) + b^2(t)dt \\
+        &\text{the above follows from $dt^2 \approx 0, dW^2(t) = dt$}\\
+        &\text{We then integrate to get:} \\
+        X^2(t) &= X^2(0) + \int^t_0 2\alpha(s)X^2(s) + b^2(s)ds + \int^t_0 2b(s)X(s)dW(s) \\
+        &\text{We then take expectation:} \\
+        \ee[X^2(t)] &= X^2(0) + \int^t_0 2\alpha(t)\ee[X^2(t)] + b^2(t) dt + 0 \\
+        &\text{We take differentiate with respect to $t$ to retrieve an ODE:} \\
+        &\frac{\partial \ee[X^2(t)]}{\partial t} = 2\alpha(t)\ee[X^2(t)] + b^2(t) \\
+        &\text{For the ODE we replace $\ee[X^2(t)]$ with $y$ to observe for $A(t) = \int^t_0 \alpha(s) ds$} \\
+        y' &= 2\alpha(t) y + b^2(t) \\
+        &e^{-2A(t)}y' - 2\alpha(t) e^{-2 A(t)} y = b^2(t) e^{-2 \alpha \cdot t} \\
+        &\frac{d}{dt}(e^{-2 A(t)}) = b^2(t) e^{-2 A(t)} \\
+        &e^{-2 A(t)}y = \int^t_0 b^2(s) e^{-2 A(t)} ds + X^2(0)\\
+        \ee[X^2(t)] &= e^{2 A(t)} \bigg(\int^t_0 b^2(s) e^{-2 A(t)} ds + X^2(0)\bigg) \\
+        &\text{Then we have variance:} \\
+        Var[X(t)] &= \ee[X^2(t)] - \ee[X(t)]^2 \\
+        &= e^{2 A(t)} \bigg(\int^t_0 b^2(s) e^{-2 A(t)} ds + X^2(0)\bigg) - (e^{A(t)}X(0))^2 \\
+        &= e^{2 A(t)} \bigg(\int^t_0 b^2(s) e^{-2 A(t)} ds \bigg)
+      \end{align*}
+    \end{solution}
+  \item Give answers to questions 1 and 2 from Breakout Room 2 on slide 9
+    \begin{solution}
+      \begin{enumerate}
+        \item Find $\ee[X(t)]$ for $X(t)$ given by
+          \begin{equation*}
+            dX(t) = (X(t) + e^t) dt + b(t, X(t), W(t))dW(t)
+          \end{equation*}
+          We have that $a(t, W(t), X(t)) = \alpha(t)X(t) + \beta(t)$ with $\alpha(t) = 1, \beta(t) = e^t$ so it follows that we have ODE
+          \begin{align*}
+            &\frac{\partial \ee[X(t)]}{\partial t} = \ee[X(t)] + e^t, \\
+            &\frac{\partial \ee[X(t)]}{\partial t}e^{-t} - \ee[X(t)]e^{-t} = e^t\cdot e^{-t}, \\
+            &\frac{\partial}{\partial t}(\ee[X(t)]e^{-t}) = 1, \\
+            &\ee[X(t)]e^{-t} = t + X(0), \\
+            &\ee[X(t)] = e^{t}(t + X(0));
+          \end{align*}
+        \item Find mean and variance for the process:
+          \begin{equation*}
+            dX(t) = -kX(t)dt + \sigma dW(t)
+          \end{equation*}
+          We have that $a(t, W(t), X(t)) = \alpha(t)X(t) + \beta(t)$ with $\alpha(t) = -k, \beta(t) = 0$ so it follows that we have ODE
+            \begin{align*}
+              &\frac{\partial \ee[X(t)]}{\partial t} = -k\ee[X(t)], \\
+              &\ee[X(t)] = e^{-kt}X(0);
+            \end{align*}
+          We then also have that
+            \begin{align*}
+              Var[X(t)] = -kt
+            \end{align*}
+      \end{enumerate}
+    \end{solution}
+\end{enumerate}
+
+\noindent {\bf Problem 4}
+\par{ In the following problems, find the mean $\ee[X(t)]$. $a$ and $b$ are some constants. \\
+(Find an ODE w.r.t for the mean and solve it)}
+
+\begin{enumerate}
+  \item $X(t) = cos(3aW(t))$
+    \begin{solution}
+      If we let $f(x) = cos(3a\cdot x)$ then we have by Ito's lemma:
+      \begin{align*}
+        dX(t) &= d(f(x)) = \partial_t f(t,x)dt + \partial_x f(t,x)dx + \frac{1}{2} \partial^2_x f(t,x) (dx)^2 \\
+        &= -3a\cdot sin(3aW(t)) dW(t) - \frac{1}{2} 9a^2 \cdot cos(3aW(t)) dt \\
+        &\text{ We then have the equivalent statement: } \\
+        X(t) &= X(0) - \int^t_0 \frac{1}{2} 9a^2 \cdot cos(3aW(s)) ds - \int^t_0 3a\cdot sin(3aW(s)) dW(s) \\
+        &\text{ We take expectation to find: } \\
+        \ee[X(t)] &= X(0) - \frac{1}{2} 9a^2 \int^t_0 \ee[X(s)] ds \\
+        &\text{ We differentiate with respect to $t$ for: } \\
+        \frac{\partial \ee[X(t)]}{\partial t} &= -\frac{9}{2}a^2 \ee[X(t)] \\
+        &\text{ This is an ODE for $\ee[X(t)]$ for which we know the solution is:} \\
+        \ee[X(t)] &= e^{-\int^t_0 \frac{9}{2}a^2 ds}\bigg( X(0) \bigg) \\
+        &\text{ note that $X(0) = cos(3aW(0)) = cos(0) = 1$} \\
+        &= e^{-9/2a^2t}
+      \end{align*}
+    \end{solution}
+  \item $X(t) = sin(t + 2bW(t))$
+    \begin{solution}
+      If we let $f(t,x) = sin(t + 2b\cdot x)$ then we have by Ito's lemma:
+      \begin{align*}
+        dX(t) &= d(f(t,x)) = \partial_t f(t,x)dt + \partial_x f(t,x)dx + \frac{1}{2} \partial^2_x f(t,x) (dx)^2 \\
+        &= cos(t + 2b \cdot W(t))dt + 2b cos(t + 2bW(t))dW(t) - 2b^2 sin(t + 2bW(t)) dt \\
+        &\text{ We then have the equivalent statement: } \\
+        X(t) &= X(0) + \int^t_0 \bigg(cos(s + 2b \cdot W(s)) - 2b^2 sin(s + 2bW(s)) \bigg)ds + \\
+        &+ \int^t_0 2b cos(s + 2bW(s))dW(s) \\
+        &\text{ We take expectation to find: } \\
+        \ee[X(t)] &= X(0) + \int^t_0 \ee \bigg[cos(s + 2b \cdot W(s)) - 2b^2 sin(s + 2bW(s))\bigg] ds \\
+        &\text{ We differentiate with respect to $t$ for: } \\
+        \frac{\partial \ee[X(t)]}{\partial t} &= \ee[cos(t + 2b \cdot W(t))] - 2b^2\ee[X(t)] \\
+        &= \ee[cos(t)cos(2bW(t)) - sin(t)sin(2bW(t))] - 2b^2\ee[X(t)] \\
+        &= cos(t)\ee[cos(2bW(t))] - sin(t)\ee[sin(2bW(t))] - 2b^2\ee[X(t)]
+      \end{align*}
+      As we know from the last question what $\ee[cos(2bW(s))]$ looks like, we explore $Y(t) = sin(2bW(s))$
+      \begin{align*}
+        dY(t) &= 2b cos(2bW(t)) dW(t) - 2b^2 sin(2bW(t))dt \\
+        &\text{ We then have the equivalent statement: } \\
+        Y(t) &= Y(0) - \int^t_0 2b^2 sin(2bW(s)) ds \\
+        &+ \int^t_0 2b cos(2bW(s)) dW(s) \\
+        &\text{ We take expectation and differentiate with respect to $t$ to find: } \\
+        \frac{\partial \ee[Y(t)]}{\partial t} &= -2b^2\ee[Y(t)], \\
+        &\text{ This is an ODE for $\ee[X(t)]$ for which we know the solution is:} \\
+        \ee[Y(t)] &= e^{-\int^t_0 2b^2 ds}\bigg( Y(0) \bigg)  = 0\\
+        &\text{ as $Y(0) = sin(2bW(0)) = sin(0) = 0$}
+      \end{align*}
+      We then have:
+      \begin{align*}
+        \frac{\partial \ee[X(t)]}{\partial t} &= cos(t)\ee[cos(2bW(t))] - sin(t)\ee[sin(2bW(t))] - 2b^2\ee[X(t)] \\
+        &= cos(t)e^{-2b^2t} - 2b^2\ee[X(t)] \\
+        &\text{ We observe that this is once again an ODE with a simple closed solution} \\
+        &\Rightarrow \\
+        \ee[X(t)] &= e^{-\int^t_0 2b^2 ds}(X(0) + \int^t_0 e^{\int^t_0 2b^2ds}cos(s)e^{-2b^2s} ds) \\
+        &= e^{-2b^2t}(0 + \int^t_0 cos(s) ds ) \\
+        &= e^{-2b^2t}(sin(t) - sin(0)) \\
+        &= sin(t)e^{-2b^2t}
+      \end{align*}
+    \end{solution}
+\end{enumerate}
+
+\end{document}
