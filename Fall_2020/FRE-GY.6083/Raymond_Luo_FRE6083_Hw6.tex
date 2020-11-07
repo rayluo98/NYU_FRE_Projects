@@ -1,0 +1,232 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Assignment 6}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1 (15 points):}
+\par{Consider an investor who is holding one share of a stock whose price is evolving according to a Standard Brownian motion process, i.e.}
+
+\begin{equation*}
+  S(u) = S(0) + \sigma W(u), u \geq 0
+\end{equation*}
+
+where $\sigma > 0$ is the volatility coefficient. This investor purchased the stock at a price $S(0) > 0$ at time 0 and decides to sell the stock if
+it reaches the price $S(0) + \Delta$ where $\Delta > 0$.
+
+\begin{enumerate}
+  \item What is the cumulative distribution function of the hitting time $\tau_{S(0)+\Delta}$?
+    \begin{solution}
+      We have that from the reflection principle that $\pp[W(t) \geq a \mid \tau_{a} \leq t] = \frac{1}{2}$ so that:
+      \begin{align*}
+        &\pp[W(t) \geq W(0) + a] \\
+        &= \pp[W(t) \geq W(0) + a \mid \tau_{W(0)+a} \leq t] \pp[\tau_{W(0)+a} \leq t] \\
+        &+ \pp[W(t) \geq W(0) + a \mid \tau_{W(0)+a} > t] \pp[\tau_{W(0)+a} > t] \\
+        &= \frac{1}{2} \pp[\tau_{W(0)+a} \leq t] + 0 = \frac{1}{2}\pp[\tau_{W(0)+a} \leq t]
+      \end{align*}
+      So that we have that:
+      \begin{align*}
+        &\pp[\tau_{S(0)+\Delta} \geq t] = 2\pp[S(0) + \sigma W(t) \geq S(0) + \Delta] \\
+        &= 2(1 - \pp[W(t) < \frac{\Delta}{\sigma}]) = 2(1 - \Phi(\frac{\Delta}{\sigma\sqrt{t}}))
+      \end{align*}
+    \end{solution}
+  \item Give also the density of the distribution of the hitting time $\tau_{S(0)+\Delta}$
+    \begin{solution}
+      We differentiate our previous solution to get that:
+      \begin{align*}
+        f_{\tau_{S(0)+\Delta}}(t) = \Delta \Phi'(\frac{\Delta}{\sigma\sqrt{t}}) t^{-3/2}
+      \end{align*}
+    \end{solution}
+  \item What is the distribution of the hitting time $\tau_{S(0) - \delta}$, i.e. of the first time at which the asset price falls below $S(0) - \delta$
+    where $\delta > 0$ is a positive constant smaller than $S(0)$?
+      \begin{solution}
+        This follows directly from the symmetry of the Wiener Process and the reflection principle. We note that the distribution of falling below $S(0) - \delta$ is
+        the same as going above $S(0) + \delta$:
+        \begin{align*}
+          &\pp[W(t) \leq W(0) - a] = \pp[W(t) \leq -a \mid \tau_{W(0) - a} \leq t] \pp[\tau_{W(0) - a} \leq t] \\
+          &+ \pp[W(t) \leq -a \mid \tau_{W(0) - a} > t] \pp[\tau_{a} > t] \\
+          &= \frac{1}{2} \pp[\tau_{W(0) - a} \leq t] + 0 = \frac{1}{2}\pp[\tau_{W(0) - a} \leq t]
+        \end{align*}
+        So that we have that:
+        \begin{align*}
+          &\pp[\tau_{S(0)-\delta} \leq t] = 2\pp[S(0) + \sigma W(t) \leq S(0) - \delta] \\
+          &= 2\pp[W(t) \leq -\frac{\delta}{\sigma}] = 2(1-\Phi(\frac{\delta}{\sigma\sqrt{t}}))
+        \end{align*}
+      \end{solution}
+\end{enumerate}
+
+
+\noindent {\bf Problem 2 (15 points):}
+\par{Compute}
+\begin{equation*}
+  \ee[W(t_1)W(t_2)W(t_3)], \text{ for $t_1 < t_2 < t_3$}
+\end{equation*}
+where $W$ is a standard Brownian motion.
+
+\begin{solution}
+  Fix $0 < t_1 < t_2 < t_3$. We first note that $W^2(t) - t$ is a martingale by:
+  \begin{align*}
+    &\ee[W^2(t_2) - t_2 \mid \mathcal{F}_{t_1}] \\
+    &= \ee[(W(t_2) - W(t_1) + W(t_1))^2 - (t_2 - t_1 + t_1) \mid \mathcal{F}_{t_1}] \\
+    &= \ee[(W(t_2)-W(t_1))^2\mid \mathcal{F}_{t_1}] + W(t_1)^2 + 2\ee[(W(t_2)-W(t_1))W(t_1) \mid \mathcal{F}_{t-1}] - t_2 + t_1 - t_1 \\
+    &= \ee[(W(t_2)-W(t_1))^2\mid \mathcal{F}_{t_1}] + W(t_1)^2 + 2W(t_1)\ee[W(t_2)-W(t_1) \mid \mathcal{F}_{t-1}] - t_2 + t_1 - t_1 \\
+    &= \ee[(W(t_2) - W(t_1))^2] + W(t_1)^2 + 2W(t_1) \cdot 0 - t_2 + t_1 - t_1 \\
+    &= t_2 - t_1 + W(t_1)^2 - t_2 + t_1 - t_1 \\
+    &= W(t_1)^2 - t_1
+  \end{align*}
+  We then note that $\ee[W^{3}(t)] = 0$ by noting that $W(t) \sim N(0, t)$ and that $\ee[W^{3}(t)]$ is then the third moment of
+  a normal distribution centered at 0. The result follows from the fact that the odd moments of the normal distribution are all zero.
+  We then have:
+  \begin{align*}
+    &\ee[W(t_1)W(t_2)W(t_3)] \\
+    &= \ee[\ee[W(t_1)W(t_2)W(t_3) \mid \mathcal{F}_{t_2}]] \\
+    &= \ee[W(t_1)W(t_2)\ee[W(t_3) \mid \mathcal{F}_{t_2}]] \\
+    &= \ee[W(t_1)W(t_2)\cdot W(t_2)] \\
+    &= \ee[\ee[W(t_1)W^2(t_2) \mid \mathcal{F}_{t_1}]]  \\
+    &= \ee[W(t_1)\ee[W^2(t_2) - t_2 + t_2 \mid \mathcal{F}_{t_1}]]  \\
+    &= \ee[W(t_1)\ee[W^2(t_2) - t_2 \mid \mathcal{F}_{t_1}] + t_2W(t_1)] \\
+    &= \ee[W(t_1)\cdot (W^2(t_1) - t_1) + t_2W(t_1)] \\
+    &= \ee[W^3(t_1)] - t_1\ee[W(t_1)] + t_2\ee[W(t_1)] \\
+    &= 0
+  \end{align*}
+\end{solution}
+
+
+\noindent {\bf Problem 1 (30 points):}
+\par{We consider the Geometric Brownian Motion model for a stock price:}
+\begin{equation*}
+  d\log S(t) = (\mu - \frac{1}{2}\sigma^2)dt + \sigma dW(t)
+\end{equation*}
+We then define the log return over the interval $[t, t + \Delta]$
+\begin{equation*}
+  r(t, \Delta) = \log S(t+\Delta) - log(S(t))
+\end{equation*}
+Integrating the first equation over $[t, t + \Delta]$ yields
+\begin{equation*}
+  \log S(t + \Delta) - \log S(t) = (\mu - \frac{1}{2} \sigma^2) \Delta + \sigma(W(t + \Delta) - W(t))
+\end{equation*}
+In other words, the log return can be written as
+\begin{equation*}
+  r(t, \Delta) = (\mu - \frac{1}{2}\sigma^2)\Delta + \sigma(W(t + \Delta) - W(t))
+\end{equation*}
+
+\begin{enumerate}
+  \item What is the distribution of $r(t, \Delta)$? In particular, give its mean and variance.
+    \begin{solution}
+      We first fix $\Delta > 0$. We note that $W(t + \Delta) - W(t) \sim N(0, \Delta)$ by definition of the Wiener Process.
+      As $(\mu - \frac{1}{2}\sigma^2)\Delta$ is deterministic, we have that:
+      \begin{equation*}
+        r(t, \Delta) \sim ((\mu - \frac{1}{2}\sigma^2)\Delta, \sigma^2 \Delta)
+      \end{equation*}
+    \end{solution}
+  \item Suppose that we are given a set of daily data for which the above model is a good fit with $\mu = 0.1$ per year and $\sigma = 0.2$
+    per year. Note that $\Delta = \text{1 day} = 1/252 \text{years}$. We wish to estimate $\mu$. Since the random walk model is stationary, ergodic,
+    and has a finite variance, which allows us to apply the Central Limit Theorem, we can safely estimate $\mu$ by computing a time-average.
+    This estimator is also the same as the Maximum Likelihood estimate for this simple model. \\
+    The convergence rate is $\sigma /\sqrt{N}$ where $N$ is the number of samples. Unfortunately, obtaining an accurate value for $\mu$ requires very
+    long time series that are never available in practice. We denote by $\hat{\mu}$ an estimate of $\mu$. If one wants to determine a
+    95\% confidence interval of the form $[\hat{\mu} - 0.01, \hat{\mu} +0.01]$, how many years of data do you need?
+    \begin{solution}
+      We want to find a 95\% confidence interval for estimate $\hat{\mu}$ through the equation $\pp[|\hat{\mu} - \mu|<0.01] = 0.95$.
+      From $\mu = 0.1, \sigma = 0.2$, we have that $\pp[\frac{\sqrt{N}}{\sigma}|\hat{\mu} - 0.1| < \frac{\sqrt{N}}{100\sigma}]
+      = \pp[5\sqrt{N}|\hat{\mu} - 0.1| < \frac{\sqrt{N}}{20}] = 0.95$ \\
+      As $Z = \frac{\sqrt{N}}{\sigma}(\hat{\mu}-0.01) \sim N(0,1)$ by the Central Limit Theorem, we have that:
+        \begin{align*}
+          \pp[Z < -\frac{\sqrt{N}}{20}] \geq \frac{1}{2}(1 - 0.95) \\
+          \Rightarrow -\frac{\sqrt{N}}{20} \geq \Phi^{-1}(0.025) = -1.96 \\
+          N \geq (20 \cdot 1.96)^2 = 1536.4 \text{ days}
+        \end{align*}
+      This means that we need $N = 1537/252 = 6.099 \approx$ 6 years of data.
+    \end{solution}
+\end{enumerate}
+
+
+
+\end{document}
