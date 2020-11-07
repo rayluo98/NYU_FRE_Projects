@@ -1,0 +1,251 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Midterm}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1}
+\begin{solution}
+  Suppose that for purposes of contradiction that $X$ is not constant. We note that as $X$ is measurable with respect to the trivial $\sigma$-algebra,
+  then $\sigma(X) = \{\emptyset, \Omega\}$ and there exists $a, b \in \Omega$ such that $X(a) \neq X(b)$. \\
+  Note that if we assume without loss of generality that $X(b) = \Omega$ then we would have $X^{-1}(X(a)) = \emptyset$.
+  This makes no sense so we have a contradiction. But otherwise $X^{-1}(X(a)) = \Omega$ so that $X(a) = X(b)$ which is another contradiction.
+  It follows that $X$ must be constant.
+\end{solution}
+
+\noindent {\bf Problem 2}
+\begin{solution}
+  $\sigma(Y)$ is defined by the sets $\omega_{y1} = (-\infty, -1]$, $\omega_{y2} =(-1,0]$, $\omega_{y3} = (0, \infty)$.
+  $\sigma(X)$ is defined by the sets $\omega_{x1} = (-\infty, -2]$, $\omega_{x2} =(-2,1]$, $\omega_{y3} = (1, \infty)$. \\
+  \begin{align*}
+    &g(0) = \ee[X \mid \omega_{y1}] = -1 \cdot \frac{\pp[x \leq -2]}{\pp[x \leq -1]} + 1 \cdot \frac{\pp[-2 < x \leq -1]}{\pp[x \leq -1]}  \\
+    & \quad = -1 \frac{0.02275}{0.15866} + 1 \cdot \frac{0.15866 - 0.02275}{0.15866} = 0.713 \\
+    &g(1) = \ee[X \mid \omega_{y2}] = 1 \cdot \frac{\pp[-1 \leq x \leq 0]}{\pp[-1 \leq x \leq 0]} = 1 \\
+    &g(2) = \ee[X \mid \omega_{y3}] = 1 \cdot \frac{\pp[-0 < x \leq 1]}{\pp[x > 0]} + 2 \cdot \frac{\pp[x > 1]}{\pp[x > 0]} \\
+    & \quad = \frac{0.84134 - 0.5}{0.5} + 2 \cdot \frac{1 - 0.84134}{0.5} = 1.317
+  \end{align*}
+\end{solution}
+
+\noindent {\bf Problem 3}
+\begin{solution}
+  We show that $V(t)$ is a Brownian motion checking the following:
+    \begin{enumerate}
+      \item $V(0) = 0$
+      \item It is straightforward to see that $V(t)$ is continuous for $t \neq 0$. We then show that it is continuous at $t = 0$ as well by showing that
+        $\lim_{t \rightarrow 0} V(t) = \lim_{s \rightarrow \infty} V(\frac{1}{s}) = \lim_{s \rightarrow \infty} \frac{1}{s} W(s) = 0$
+      \item As the increments of $W(t)$ are independent, we observe that the increments of $V(t)$ are independent by observing that $\forall \epsilon > 0$,
+        $V(t + \epsilon) - V(t) = t\cdot \big( W(\frac{1}{t+s}) - W(\frac{1}{t}) \big) + \epsilon W(\frac{1}{t + \epsilon})$ represent independent increments
+        as a summation of $W(t)$ increments which are independent.
+      \item We have that $\forall \epsilon > 0, (s + \epsilon)W(\frac{1}{s + \epsilon}) - sW(\frac{1}{s})$ is the difference of two scaled normal distributions
+        so it normal. We then observe that $\ee[ (s + \epsilon)W(\frac{1}{s + \epsilon}) - sW(\frac{1}{s})] = (s+\epsilon)\cdot 0 - s\cdot 0 = 0$ and that
+        $Var[(s + \epsilon)W(\frac{1}{s + \epsilon}) - sW(\frac{1}{s})] = Var[s\cdot (W(\frac{1}{s+\epsilon}) - W(\frac{1}{s}))
+        + \epsilon W(\frac{1}{s + \epsilon}) ] \\
+        = s^2 \cdot Var[\cdot W(\frac{1}{s+\epsilon} - \frac{1}{s})]  + \epsilon^2 Var[ W(\frac{1}{s + \epsilon}) ] \\
+        = s^2 (\frac{\epsilon}{s\cdot (s+ \epsilon)}) + \frac{\epsilon^2}{s+\epsilon} = \epsilon$. \\
+        So it follows that $V(t + \epsilon) - V(t) \sim N(0, \epsilon)$
+    \end{enumerate}
+  This is a Wiener process
+\end{solution}
+
+\noindent {\bf Problem 4}
+\begin{solution}
+  \begin{enumerate}
+    \item $Y(t) = W^4(t) + t^3 + W(t)$
+      \begin{align*}
+        dY(t) &= d(W^4(t) + t^3 + W(t)) \\
+         &= d(W^4(t)) + 3t^2 dt + dW(t) \\
+         &= \frac{1}{2}\cdot 4 \cdot 3 W^(4-2)(t) dt + 4W^(4-1)(t) dW(t) + 3t^2 dt + dW(t) \\
+         &= \bigg(6W^2(t) + 3t^2 \bigg) dt + (4W^3(t) + 1) dW(t)
+      \end{align*}
+    \item $Y(t) = 1 + t^4 + e^{W(t)}$
+      \begin{align*}
+        dY(t) &= d(1 + t^4 + e^{W(t)}) \\
+        &= 4t^3 dt + d(e^{W(t)}) \\
+        &= 4t^3 dt + e^{W(t)} dW(t) + \frac{1}{2} e^{W(t)} dt \\
+        &= (\frac{1}{2} e^{W(t)} + 4t^3) dt + e^{W(t)} dW(t)
+      \end{align*}
+  \end{enumerate}
+\end{solution}
+
+\noindent {\bf Problem 5}
+\begin{solution}
+  \begin{enumerate}
+    \item $X(t) = W^3(t) - 3tW(t)$\\
+        We observe first observe that \\
+        $W^3(t+s) = (W(t+s) - W(t) + W(t))^3 = (W(t+s)-W(t))^3  + 3(W(t+s)-W(t))^2W(s) + 3(W(t+s)-W(t))W(t)^2 + W(t)^3$ so that we have:
+          \begin{align*}
+            &\ee[X(t+s) \mid \mathcal{F}_t] \\
+            &= \ee[W^3(t+s) - 3(t+s)W(t+s) \mid \mathcal{F}_t] \\
+            &= \ee[W(t+s)-W(t))^3  + 3(W(t+s)-W(t))^2W(t) + 3(W(t+s)-W(t))W(t)^2 + \\
+            &+ W(t)^3 \mid \mathcal{F}_{t}] - \ee[3(t+s)W(t+s) \mid \mathcal{F}_t] \\
+            &\text{ we note that $\ee[(W(t+s)-W(t))^3] = 0, \ee[(W(t+s)-W(t))^2] = s, \ee[W(t+s)-W(t)] = 0$} \\
+            &= 3s\ee[W(t)\mathcal{F}_{t}] + W^3(t) - 3(t+s)\ee[W(t+s) \mid \mathcal{F}_t] \\
+            &= 3sW(t) + W^3(t) - 3(t+s)W(t) = W^3(t) - 3tW(t)
+          \end{align*}
+          So it is a martingale.
+    \item $Y(t) = W^5(t)$
+        We observe that for $s > 0$:
+          \begin{align*}
+            &\ee[Y(t+s) - Y(s) \mid \mathbb{F}_t] \\
+            &= \ee[(W(t+s)^5-W(t)^5 \mid \mathbb{F}_t] \\
+            &= \ee[(W(t+s)-W(t))\big(W(t+s)^4 + W(t+s)^3W(t) + \\
+            &+ W(t+s)^2W(t)^2 + W(t+s)W(t)^3 + W(t)^4 \big) \mid \mathbb{F}_t] \\
+            &= \ee[(W(t+s)-W(t))]\ee[\big(W(t+s)^4 + W(t+s)^3W(t) + \\
+            &+ W(t+s)^2W(t)^2 + W(t+s)W(t)^3 + W(t)^4 \big) \mid \mathbb{F}_t] \\
+            &= 0
+          \end{align*}
+          It follows that $\ee[Y(t+s) \mid \mathbb{F}_t] = Y(s)$ so that it is a martingale.
+  \end{enumerate}
+\end{solution}
+
+\noindent {\bf Problem 6}
+  \begin{solution}
+    We let $\phi(t,x) = \frac{1}{\sqrt{2}} e^{-t}\cdot e^{\sqrt{2}x}$. Then note that: \\
+      $\phi_{t}(t,x) = -\frac{1}{\sqrt{2}} e^{-t}\cdot e^{\sqrt{2}x} = -\frac{1}{2} \cdot \phi_{xx}(t,x)$. \\
+      So this is a solution to the heat equation $\phi_{t} = c \cdot \phi_{xx}$ for $c = \frac{-1}{2}$. This
+      implies that $\phi_{t} + \frac{1}{2}\phi_{xx} = 0$ so that: \\
+      \begin{align*}
+        d(\phi(t,W(t))) = \partial_x \phi(t,W(t))dW(t) + (\partial_t \phi +\frac{1}{2}\partial^2_{x} \phi) = \partial_x \phi(t,W(t))dW(t) \\
+        \int^5_0 \phi_{x}(t,x) dW(t) = \int^5_0 d(\phi(t,W(t))) = \phi(5, W(5)) - \phi(0, W(0)) = e^{-5+\sqrt(2)W(5)} - 1
+      \end{align*}
+  \end{solution}
+
+\noindent {\bf Problem 7}
+\begin{solution}
+  We note that $\int e^{-x^2}cos x dx = \sqrt{\pi} \int cos x \cdot (\frac{1}{\sqrt{\pi}}) e^{-\frac{1}{2}(\sqrt{2}x)^2} dx$.\\
+  We note $(\frac{1}{\pi}) e^{-\frac{1}{2}(\sqrt{2}x)^2}$ is the pdf of a normal distribution with mean $\mu = 0$ and variance $\sigma^2 = \frac{1}{2}$.
+  The integral then becomes $\int e^{-x^2}cos x dx = \sqrt{\pi} \ee[cos(X)]$ where $X \sim N(0, \frac{1}{2})$. \\
+  We have shown in homework that $\ee[cos(3aW(t))] = e^{-9/2a^2t}$. Here $t = \frac{1}{2}$, $a = 1/3$ so that: \\
+  $\int e^{-x^2}cos x dx = \sqrt{\pi} \ee[cos(X)] = \sqrt{\pi} e^{-1/4}$
+\end{solution}
+
+\noindent {\bf Problem 8}
+
+\begin{solution}
+  \begin{enumerate}
+    \item We fix $A \in \mathcal{G}$. As $A \in \mathcal{G}$ and $\mathcal{G}$ is a $\sigma$-algebra, then $A^{c} \in \mathcal{G}$. It is straightfoward
+      to see that $\chi_A^{-1}(1) = A \in \mathcal{G}$, $\chi_A^{-1}(0) = A^c \in \mathcal{G}$ so that $\chi_A$ is $\mathcal{G}$-measurable.
+    \item As $X$ is independent from $\mathcal{G}$, it is measurable by some $\sigma$-algebra $\mathcal{G}'$ that is independent to $\mathcal{G}$.
+      This means that $X$ is by definition independent to $\chi_X$ as they are measured by independent sigma-algebra.
+    \item As we have established that $X$ and $\chi_A$ are independent r.v.:
+      \begin{equation*}
+        \ee[X \chi_A] = \ee[X]\ee[\chi_A] = \ee[X]\cdot(1 \cdot \pp[\omega \in A]) + \ee[X]\cdot(0 \cdot \pp[\omega \notin A]) = \\
+        = \ee[X]\pp(A)
+      \end{equation*}
+  \end{enumerate}
+\end{solution}
+
+\noindent {\bf Problem 9}
+\begin{solution}
+  \begin{enumerate}
+    \item By taking expectation, we have the following equation:
+      \begin{align*}
+        \frac{\partial{\ee[X(t)]}}{dt} = \frac{t}{1+t^2} \\
+        \ee[X(t)] = X(0) + \frac{1}{2}\ln(1+t^2) \\
+        \ee[X(t)] = 2 + \ln(1+t^2)
+      \end{align*}
+      We have the following variance: \\
+        \begin{align*}
+          Var[X(t)] = \int^t_0 (s^{3/2})^2 ds = \frac{t^4}{4}
+        \end{align*}
+    \item By taking expectation, we have the following equation:
+      \begin{align*}
+        \frac{\partial{\ee[X(t)]}}{dt} = cos(t) \\
+        \ee[X(t)] = sin(t) + X(0) \\
+        \ee[X(t)] = sin(t) + 3
+      \end{align*}
+      We have the following variance: \\
+        \begin{align*}
+          Var[X(t)] = \int^t_0 (-sin(s))^2 ds = \int^t_0 \frac{1}{2}(2sin^2 - 1) + \frac{1}{2} ds \\
+          = \int^t_0 -\frac{1}{2}cos(2s) + \frac{1}{2} ds = -\frac{1}{4}sin(2t)
+        \end{align*}
+  \end{enumerate}
+\end{solution}
+
+\end{document}
