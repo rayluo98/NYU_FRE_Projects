@@ -1,0 +1,310 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Assignment 8}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent{\bf Problem 1}
+  \begin{enumerate}
+    \item Implement in Matlab the Monte Carlo Algorithm seen in class for pricing a European call option
+      \begin{solution}
+        \begin{figure}[H]
+          \centering
+            \includegraphics[width=3in]{Hw8_1a}
+        \end{figure}
+      \end{solution}
+    \item Use your algorithm to compute the value at time 0 of a European call with maturity $T = 1$ year and
+      strike price $K = 100$, for the current stock price $S_0 = 110$, assuming that the annualized parameters are
+      $r = 0.01$, $\sigma = 0.2$.
+        \begin{solution}
+          Inputting $S_0 = 110, K = 100, T = 1, r = 0.01, \sigma = 0.02$, we get the following answers from the algorithm above: \\
+          $n = 100,000$: $\hat{C} = 14.9452$ \\
+          $n = 1,000,000$: $\hat{C} = 14.9540$
+        \end{solution}
+    \item Compare your above result with the exact value provided by the analytical formula seen in class for
+      $n = 100,000$ and $n = 1,000,000$ sample paths.
+        \begin{solution}
+          We use the analytical closed form solution of the BS formula to find that for:\\
+          \begin{equation*}
+            S_0 = 110, K = 100, T = 1, r = 0.01, \sigma = 0.2
+          \end{equation*}
+          We have that $d_1 = \frac{\ln{S/K} + (r + \sigma^2/2)(T-t)}{\sigma\sqrt{T-t}} = \frac{\ln{1.1} + (0.01 + (0.2)^2/2)}{0.2} = 0.62655$,
+          $d_2 = d_1 - \sigma\sqrt{T-t} = d_1 - 0.2 = 0.42655$ \\
+          $C(S_1, t) = S_0 \Phi(d_1) - Ke^{-r(T-t)} \Phi(d_2) = 110\cdot 0.7345 - 100\cdot e^{-0.01} \cdot 0.6651 = 14.947$
+        \end{solution}
+  \par{A cash-or-nothing Binary pays nothing if the price ends up below the strike price and pays fixed amount $Q$ if it ends
+    up above the strike price. Its payoff function is thus}
+    \begin{equation*}
+      V_T = \chi_{\{S_T \geq K \}} Q
+    \end{equation*}
+  \par{where $\chi_{\{S_T \geq K \}}$, the indicator function, is defined by }
+    \begin{align*}
+      \chi_{\{S_T \geq K \}} =
+      \begin{cases}
+        1 \quad \text{ if $S_T \geq K$} \\
+        0 \quad \text{ Otherwise}
+      \end{cases}
+    \end{align*}
+
+    \item Modify your algorithm to compute the price of a Binary call option with a cash-or-nothing payoff.
+        \begin{solution}
+          \begin{figure}[H]
+            \centering
+              \includegraphics[width=3in]{Hw8_1b}
+          \end{figure}
+        \end{solution}
+    \item Compute the value of the call at time 0 for the following parameters:
+      \begin{equation*}
+        K = 100, T = 1, \sigma = 0.20, Q = 1, S_0 = 110, r = 0.01
+      \end{equation*}
+
+      \begin{solution}
+        Running the above algorithm with $K = 100, T = 1, \sigma = 0.20, Q = 1, S_0 = 110, r = 0.01$ and
+        $n = 1,000,000$, we get $\chi_{\{S_T \geq K\}} = 0.6582$
+      \end{solution}
+    \item Derive a price in closed form for the cash-or-nothing call at time $t$ when the value of the stock is $s$.
+      \begin{solution}\\
+        *We showed in class that the discounted option value is a martingale by extending the martingale nature of the discounted stock price.  \\
+        We have that $v(s,t) = \ee^{\mathbb{Q}}[e^{-r(T-t)}V(T) | S(t) = s]$ and that: \\
+        $S(T) = S(t)exp\{\sigma(\tilde{W}(T) - W(t)) + (r- \frac{1}{2}\sigma^2)(T-t)\}
+        = S(t)exp\{\sigma(\sqrt{T-t}Y) + (r- \frac{1}{2}\sigma^2)(T-t)\}$ \\
+        for $Y = -\frac{\tilde{W}(T)-W(t)}{\sqrt{T-t}}$.
+        It then follows that:
+        \begin{align*}
+          v(s,t) = \ee^{\mathbb{Q}}[e^{-r(T-t)}\chi_{\{S_T \geq K \}} | S(t) = s] \\
+          = e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int_{\rr} \id_{S(T) > K} e^{-y^2/2} dy \bigg)
+        \end{align*}
+        Note that $S(T) \geq K \Rightarrow \sigma(\sqrt{T-t}Y) + (r- \frac{1}{2}\sigma^2)(T-t) \geq \ln(\frac{K}{S(0)}) \\
+        \Rightarrow Y \geq d_2 = \frac{\ln(\frac{S(0)}{K}) + (r- \frac{1}{2}\sigma^2)(T-t)}{\sigma(\sqrt{T-t})}$. \\
+        We can then write the indicator function into the bounds of our integral to get:
+        \begin{align*}
+          v(s,t) = e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{d_2} e^{-y^2/2} dy \bigg) \\
+          = e^{-r(T-t)}\Phi(d_2)
+        \end{align*}
+      \end{solution}
+    \item Compute the numerical value of this call option for the parameters
+      \begin{equation*}
+        r = 0.01, S_0 = 110, K = 100, T = 1, \sigma = 0.2, Q = 1;
+      \end{equation*}
+      by using the analytical formula you derived in the previous question
+        \begin{solution}
+          We have that:\\
+          $d_2 = \frac{\ln{S/K} + (r - \sigma^2/2)(T-t)}{\sigma\sqrt{T-t}} = \frac{\ln{1.1} + (0.01 + (0.2)^2/2)}{0.2} = 0.62655$ \\
+          $v(s,t) = e^{-r(T-t)}\Phi(d_2) = 0.6585$
+        \end{solution}
+    \item Compare your answer with the answer you obtained by using Monte Carlo simulations.
+      \begin{solution}
+        The answers differ on the fourth digit, meaning error is of the fourth order. This agrees with the fact that the Monte Carlo Algorithm has error
+        $O(\sqrt{n})$.
+      \end{solution}
+  \end{enumerate}
+
+  \noindent{\bf Problem 2}
+    \par{Consider a stock whose price per share is modeled by using the standard Geometric Brownian motion model}
+  \begin{equation*}
+    dS(t) = rS(t)dt + \sigma S(t)d\tilde{W}(t)
+  \end{equation*}
+  where $\tilde{W}(t)$ is a standard Brownian motion under the risk neutral-probability measure, $r > 0$ is the interest rate
+  and $\sigma > 0$ is the volatility. Consider now a contingent claim on the underlying stock with maturity date $T$ and payoff
+
+  \begin{equation*}
+    V(T) = aS(T) + b
+  \end{equation*}
+  where $a,b$ are two positive real numbers.
+
+  \par{Compute in closed-form the arbitrage free price, $v(t,s)$ of this claim at time $t$, for the current value of the stock $s$}
+
+  \begin{solution}\\
+    We showed in class that the discounted option value is a martingale by extending the martingale nature of the discounted stock price. \\
+    We note that in an arbitrage-free market, discounted stock prices are a martingale under the standard probability measure. It then follows
+    that as according to the fundamental theorem of asset pricing, we have an equivalent measure $\mathbb{Q}$ for our contingent claim, we have that:
+    \begin{align*}
+      v(s,t) &= \ee^{\mathbb{Q}}[e^{-r(T-t)}V(T) | S(t) = s] \\
+      &= \ee^{\mathbb{Q}}[e^{-r(T-t)}\bigg(aS(T) + b \bigg) | S(t) = s]
+      &= a \ee^{\mathbb{Q}}[e^{-r(T-t)}S(T)| S(t) = s] + be^{-r(T-t)} \\
+      &= as + be^{-r(T-t)}
+    \end{align*}
+  \end{solution}
+
+  \noindent{\bf Problem 3}
+    \par{The price of a share of a stock, $S(t)$, satisfies the Stochastic Differential Equation}
+
+    \begin{equation*}
+      dS(t) = rS(t)dt + \sigma S(t)dW(t)
+    \end{equation*}
+    where $W$ is a standard Brownian motion, $r > 0$ is the risk-free rate (short rate) and $\sigma > 0$ is the volatility coefficient.
+    \par{ Next we consider the Bull call spread option strategy that pays at maturity date the payoff}
+
+    \begin{align*}
+      V(T) =
+      \begin{cases}
+        B & \text{if $S(T) > B$} \\
+        \frac{A+B}{B-A}S(T) - \frac{2AB}{B-A} & \text{ if $A \leq S(T) \leq B$} \\
+        -A & \text{ if $S(T) < A$}
+      \end{cases}
+    \end{align*}
+    where $0 < A < B$ are constant.
+
+    \begin{enumerate}
+      \item Write the risk-neutral pricing formula for the price $v(t,s)$ at time $t$, for the current stock price $S(t) = s$ of the Bull call spread.
+        \begin{solution}
+          \\
+          We note that in an arbitrage-free market, discounted stock prices are a martingale under the standard probability measure. It then follows
+          that as according to the fundamental theorem of asset pricing, we have an equivalent measure $\mathbb{Q}$ for our contingent claim, we have that:
+          \begin{align*}
+            v(s,t) = \ee^{\mathbb{Q}}[e^{-r(T-t)}V(T) | S(t) = s] \\
+          \end{align*}
+            The bull call spread can be constructed by buying a call option (with price $c_1(0,S_0)$) with a lower strike price $K_1$
+            and selling another call option (with price $c_2(0,S_0)$) with a higher strike price $K_2$. We note that in this construction, the payoff is different
+            as our payoff function seems to implicitly include a premia for buying and selling the options and then rescaling the payoffs. We can view our
+            bull call spread as a linearly transformed version of the standard bull call spread by scaling of $\frac{B+A}{B-A}$ and paying initial premia $A$.
+            We can verify this as the strike prices of our two component call options should be at the transition points for our function and that
+            the lower bound of the payoff is the premia received by selling an option minus the premia used to buy an option. We have that:
+            \begin{align*}
+              \begin{cases}
+                [c_2(0,S_0) - c_1(0,S_0)]e^{rT} = -A \\
+                K_1 = A \\
+                K_2 = B
+              \end{cases}
+            \end{align*}
+            In this case, we would have payoff:
+            \begin{align*}
+              V(T) =
+              \begin{cases}
+                C\big[(S-A) - (S-B)\big] + D = C(B-A)+D & \text{if $S(T) > B$} \\
+                C\big[0\big] + D = -A & \text{ if $S(T) < A$}
+              \end{cases}
+            \end{align*}
+            From which we can get $C = \frac{B+A}{B-A}$ and $D = -A$. \\
+            It follows that for $C_1, C_2$ as the value of our two component options, we have:
+            \begin{align*}
+              v(s,t) = \ee^{\mathbb{Q}}[e^{-r(T-t)}\bigg(\frac{B+A}{B-A}\big(C_1(T) + C_2(T)\big)-A\bigg) | S(t) = s] \\
+              = \frac{B+A}{B-A}\ee^{\mathbb{Q}}[e^{-r(T-t)}C_2(T) | S(t) = s] - \frac{B+A}{B-A}\ee^{\mathbb{Q}}[e^{-r(T-t)}C_2(T) | S(t) = s] - Ae^{-r(T-t)}\\
+              = \frac{B+A}{B-A}(c_2(s,t) - c_1(s,t)) - Ae^{-r(T-t)}
+            \end{align*}
+            Where $c_2$ is the value of the second call option sold with strike price $B$ and $c_1$ is the value of the first call option
+            bought with strike price $A$. We can find analytic forms of both equations using Black-Scholes.
+        \end{solution}
+      \item Derive an analytical formula for the price $v(t,s)$ of the Bull call spread. Show your work!
+        \begin{solution}
+          We can proceed through the risk neutral approach by noticing that our payoff [which represents our terminal condition] $V(T) = (S - A)^+ - (S - B)^+ -A$
+          [that is the difference of the payoff of the two calls and including cost of premia for the two options].\\
+          We also have that $S(T) = S(t)exp\{\sigma(\tilde{W}(T) - W(t)) + (r- \frac{1}{2}\sigma^2)(T-t)\}
+          = S(t)exp\{\sigma(\sqrt{T-t}Y) + (r- \frac{1}{2}\sigma^2)(T-t)\}$ \\
+          for $Y = -\frac{\tilde{W}(T)-W(t)}{\sqrt{T-t}}$.
+          We can rewrite this terminal condition as $V(T) = B \cdot \id_{S(T) > B} + \bigg(\frac{A+B}{B-A}S(T) - \frac{2AB}{B-A}\bigg)\cdot \id_{A \leq S(T) \leq B}
+          - A \cdot \id_{S(T) < A} - A$. We proceed with a risk-neutral measure approach with:
+          \begin{align*}
+            v(s,t) &= \ee^{\mathbb{Q}}[e^{-r(T-t)}\chi_{\{S_T \geq K \}} | S(t) = s] \\
+            &= e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int_{\rr} B \cdot \id_{S(T) > B} + \\
+            &+ \bigg(\frac{A+B}{B-A}S(T) - \frac{2AB}{B-A}\bigg)\cdot \id_{A \leq S(T) \leq B}
+            - A \cdot \id_{S(T) < A} - A e^{-y^2/2} dy \bigg)
+          \end{align*}
+          We note that $S(T) \geq B \Rightarrow \sigma(\sqrt{T-t}Y) + (r- \frac{1}{2}\sigma^2)(T-t) \geq \ln(\frac{K}{S(0)}) \\
+          \Rightarrow Y \geq d_2 = \frac{\ln(\frac{S(0)}{B}) + (r- \frac{1}{2}\sigma^2)(T-t)}{\sigma(\sqrt{T-t})}$ \\
+          Likewise, $S(T) < A \Rightarrow Y < d_1 = \frac{\ln(\frac{S(0)}{A}) + (r- \frac{1}{2}\sigma^2)(T-t)}{\sigma(\sqrt{T-t})}$ so that
+          we have integral form:
+          \begin{align*}
+            v(s,t) &= e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{d_2} B e^{-y^2/2} dy \bigg) + \\
+            &\qquad + e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{d_2}_{d_1} \bigg(\frac{A+B}{B-A}S(T) - \frac{2AB}{B-A}\bigg) e^{-y^2/2} dy \bigg)\\
+            &\qquad + e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{d_1}_{-\infty} -A e^{-y^2/2} dy \bigg) \\
+            &= e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{d_2} B+A e^{-y^2/2} dy \bigg) + \\
+            &\qquad+ e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{d_2}_{d_1} \bigg(\frac{A+B}{B-A}S(T) - A\frac{B+A}{B-A}\bigg) e^{-y^2/2} dy \bigg)\\
+            &\qquad+ e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{-\infty} -A e^{-y^2/2} dy \bigg) \\
+            &= \frac{B+A}{B-A} \bigg[e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{d_2} B-A e^{-y^2/2} dy \bigg) + \\
+            &\qquad+ e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{d_2}_{d_1} \bigg(S(T) - A\bigg) e^{-y^2/2} dy \bigg)\bigg] - Ae^{-r(T-t)}\\
+            &= \frac{B+A}{B-A} \bigg[e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(-\int^{\infty}_{d_2}  \bigg(S(T) - B\bigg)e^{-y^2/2} dy \bigg) + \\
+            &\qquad+ e^{-r(T-t)}\frac{1}{\sqrt{2\pi}}\bigg(\int^{\infty}_{d_1} \bigg(S(T) - A\bigg) e^{-y^2/2} dy \bigg)\bigg] - Ae^{-r(T-t)}\\
+          \end{align*}
+          It's clear to see that the two integrals inside simplify into the Black-scholes formulas for call options $c_2, c_1$ respectively.
+        \end{solution}
+    \end{enumerate}
+
+
+\end{document}

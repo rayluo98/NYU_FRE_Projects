@@ -1,0 +1,406 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Assignment 7}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+
+\noindent{ \bf Problem 1}
+  \par{Compute the differentials of:}
+
+  \begin{enumerate}
+    \item $W^2(t)$
+      \begin{solution}
+        We do this with usage of the product rule in stochastic calculus:
+        \begin{align*}
+          d(W^2(t)) = d(W(t)\cdot W(t)) = dW(t)W(t) + W(t)dW(t) + dW(t)dW(t) \\
+          = 2W(t) dW(t) + dt
+        \end{align*}
+      \end{solution}
+    \item $W^3(t)$
+      \begin{solution}
+        We proceed with ito's lemma for $f(x,t) = x^3$ so that:
+        \begin{align*}
+          d(W^3(t)) = f'(W(t)) dW(t) + \frac{1}{2} f''(W(t)) (dW(t))^2 \\
+          = 3W^2(t) dW(t)  + 3W(t) dt
+        \end{align*}
+      \end{solution}
+    \item $\exp{\{-rt\}}W(t)$
+      \begin{solution}
+        We proceed with ito's lemma for $f(x,t) = xe^{-rt}$ so that:
+        \begin{align*}
+          d(e^{-rtW(t)}) = f_{t} dt + f_{x} dW(t) + \frac{1}{2} f_{xx} dt \\
+          = -rW(t)e^{-rt} dt + e^{-rt} dW(t) + \frac{1}{2} 0 (dW(t))^2 \\
+          = -rW(t)e^{-rt} dt + e^{-rt} dW(t)
+        \end{align*}
+      \end{solution}
+    \item $\exp{\{t^2 - W(t)\}}$
+      \begin{solution}
+        We proceed with ito's lemma for $f(x,t) = e^{t^2 - x}$ so that:
+        \begin{align*}
+          d(e^{t^2 - W(t)}) = f_{t} dt + f_{x} dW(t) + \frac{1}{2} f_{xx} dt \\
+          = \big(2t\cdot e^{t^2 - W(t)} + \frac{1}{2}e^{t^2 - W(t)} \big)dt
+          - e^{t^2 - W(t)} dW(t) \\
+          = (2t + \frac{1}{2})e^{t^2 - W(t)} dt - e^{t^2 - W(t)} dW(t)
+        \end{align*}
+      \end{solution}
+  \end{enumerate}
+
+\noindent{ \bf Problem 2}
+  \begin{enumerate}
+    \item Compute the differential of $W^4(t)$, where $W$ is a standard Brownian motion.
+      \begin{solution}
+        We proceed with ito's lemma for $f(x,t) = x^4$ so that:
+        \begin{align*}
+          d(W^4(t)) = f' dW(t) + \frac{1}{2} f'' dt  = 4W^3(t) dW(t) + 6W^2(t) dt
+        \end{align*}
+      \end{solution}
+    \item Integrate the above formula on $[0,T]$.
+      \begin{solution}
+        \begin{align*}
+          \int^T_0 d(W^4(t)) &= \int^T_0 4W^3(t) dW(t) + \int^T_0 6W^2(t) dt \\
+          W^4(T) - W^4(0) &= \int^T_0 4W^3(t) dW(t) + \int^T_0 6W^2(t) dt \\
+          W^4(T) &= \int^T_0 4W^3(t) dW(t) + \int^T_0 6W^2(t) dt
+        \end{align*}
+      \end{solution}
+    \item Take the expectation of the left and right-hand sides and deduce $\ee[W^4(T)]$
+      \begin{solution}
+        On the left-hand side, we have that:
+        \begin{align*}
+          \ee[\int^T_{0} d(W^4(t))] = \ee[W^4(T)- W^4(0)] = \ee[W^4(T)]
+        \end{align*}
+        On the right-hand side, we have that:
+        \begin{align*}
+          &\ee[\int^T_0 4W^3(t) dW(t) + \int^T_0 6W^2(t) dt] \\
+          &= \ee[\int^T_0 4W^3(t) dW(t)] + \ee[\int^T_0 6W^2(t) dt] \\
+          &= 0 + \int^T_0 6\ee[W^2(t)] dt \text{ By Fubini's theorem in Classical Calculus} \\
+          &= \int^T_0 6t dt = 3T^2
+        \end{align*}
+      \end{solution}
+  \end{enumerate}
+
+\noindent{ \bf Problem 3}
+  \par{We consider the following mean-reverting model for the spread $S(t)$ of
+  two co-integrated stocks:}
+    \begin{equation*}
+      dS(t) = -\lambda S(t) dt + \sigma dW(t), S(0) = s > 0
+    \end{equation*}
+where $\lambda > 0, \sigma > 0$
+
+\begin{enumerate}
+  \item Show by using Ito-Doeblin formula that
+    \begin{equation*}
+      S(t) = e^{-\lambda t}(s + \sigma \int^t_0 e^{\lambda u} dW(u))
+    \end{equation*}
+    is a solution of the above Stochastic Differential Equation.
+
+    \begin{solution}
+      \\
+      We let $f(t,x) = e^{\lambda t}\cdot x$ and then use the Ito-Doeblin formula to find that:
+      \begin{align*}
+        d(f(t,S(t)) &= d(e^{\lambda t}\cdot S(t)) = \lambda e^{\lambda t} \cdot S(t) dt + e^{\lambda t} dS(t) + \frac{1}{2} \cdot 0 (dS(t))^2 \\
+        &= \lambda e^{\lambda t} \cdot S(t) dt + e^{\lambda t} (-\lambda S(t) dt + \sigma dW(t)) \\
+        &= e^{\lambda t} \sigma dW(t)
+      \end{align*}
+      If we integrate the above expression over interval [0,t], we get:
+      \begin{align*}
+        &e^{\lambda t}\cdot S(t) - e^{\lambda 0}\cdot S(0) = \int^t_0 e^{\lambda u} \sigma dW(u) \\
+        &e^{\lambda t} S(t) = S(0) + \int^t_0 e^{\lambda u} \sigma dW(u) \\
+        &S(t) = e^{-\lambda t}\big(s + \sigma \int^t_0 e^{\lambda u}  dW(u) \big), \text{where $S(0) = s > 0$ }
+      \end{align*}
+    \end{solution}
+  \item Give the distribution of $S(t)$ and specify its mean and variance.
+    \begin{solution}
+      We have:
+      \begin{align*}
+        \ee[S(t)] = \ee[e^{-\lambda t}\big(s + \sigma \int^t_0 e^{\lambda u}  dW(u) \big)] \\
+        = e^{-\lambda t}s + \ee[e^{-\lambda t}\sigma \int^t_0 e^{\lambda u}  dW(u)] \\
+        = e^{-\lambda t}s + e^{-\lambda t}\sigma \ee[ \int^t_0 e^{\lambda u}  dW(u)] \\
+        = e^{-\lambda t}s + e^{-\lambda t}\sigma\cdot 0 = e^{-\lambda t}s
+      \end{align*}
+      The variance follows from:
+      \begin{align*}
+        Var[S(t)] &= Var[e^{-\lambda t}\big(s + \sigma \int^t_0 e^{\lambda u}  dW(u) \big)] \\
+        &= Var[e^{-\lambda t}\sigma \int^t_0 e^{\lambda u}  dW(u)] \\
+        &= e^{-2\lambda t}\sigma^2 Var[\int^t_0 e^{\lambda u}  dW(u)] \\
+        &= e^{-2\lambda t}\sigma^2 \bigg( \ee[(\int^t_0 e^{\lambda u}  dW(u))^2] - \ee[\int^t_0 e^{\lambda u}  dW(u)]^2 \bigg) \\
+        &= e^{-2\lambda t}\sigma^2 \bigg( \ee[(\int^t_0 e^{2\lambda u}  du] - (0)^2 \bigg) \\
+        &= e^{-2\lambda t}\sigma^2 \bigg( \frac{1}{2\lambda} e^{2\lambda t} - \frac{1}{2\lambda} \bigg) \\
+        &= \sigma^2 \bigg( \frac{1}{2\lambda} - \frac{1}{2\lambda}e^{-2\lambda t} \bigg)
+      \end{align*}
+
+    \end{solution}
+  \item Give $\lim_{t \rightarrow +\infty} \ee[S(t)]$ and interpret the result in plain english
+    \begin{solution}
+      \begin{align*}
+        \lim_{t \rightarrow +\infty} \ee[S(t)] = \lim_{t \rightarrow +\infty} e^{-\lambda t}s = 0
+      \end{align*}
+      This means that our stock price will on average go to zero in the long run.
+    \end{solution}
+  \item Does the variance of $S(t)$ increase or decrease over time?
+    \begin{solution}
+      Variance increases over time as the negative term vanishes with time.
+    \end{solution}
+\end{enumerate}
+
+\noindent{ \bf Problem 4:} Let $W(t)$ be a brownian motion, and define
+  \begin{equation*}
+    B(t) = \int^t_0 sign(W(s)) dW(s)
+  \end{equation*}
+  where
+  \begin{align*}
+    sign(x) =
+      \begin{cases}
+        1 &, if x \geq 0 \\
+        -1 &, otherwise
+      \end{cases}
+  \end{align*}
+
+  \begin{enumerate}
+    \item Show that $B(t)$ is a Brownian motion
+      \begin{solution}
+        We check the following:
+          \begin{enumerate}
+            \item $B(0) = \int^0_0 sign(W(0)) dW(s) = 0$
+            \item For $\epsilon > 0$, $B(t + \epsilon) - B(t) = \int^{t+\epsilon}_{t} sign(W(s)) dW(s)$ is independent of increments $B(m) - B(n)$ for
+              $0 \leq n \leq m < t$.
+            \item Almost-sure continuity follows from the construction of the Ito integral. As in the construction, we can find simple processes such that their integrals are continuous
+              and converge in the mean square sense to our integral.
+            \item For $\epsilon > 0$, $B(t + \epsilon) - B(t) = \int^{t+\epsilon}_{t} sign(W(s)) dW(s)$. Note that here if we take a partition $\mathcal{P}$ of
+              $t = t_1 < t_2 < \cdots < t_n = t+\epsilon$ where the mesh of $\mathcal{P}$ converges to zero, we can approximate the above integral as the sum
+              $B(t + \epsilon) - B(t) = \sum_{j=1}^{n} sign(W(t_j)) (W(t_{j}) - W(t_{j-1}))$ so we are considering the sum of positive and negative increments of the wiener process which are
+              normal with mean 0 and variance $t_{j} - t_{j-1}$. We note that this normal distribution has mean 0 and variance $\sum_{j=1}^{n} t_{j}-t_{j-1} = t_n - t_1 = \epsilon$.
+              So $B(t)$ has increments which are normally distributed with mean zero and variance equal to the increment length.
+          \end{enumerate}
+      \end{solution}
+    \item Use Ito's product rule to compute $d[B(t)W(t)]$. Integrate both sides of the
+      resulting equation, take expectations and deduce that
+        \begin{equation*}
+          \ee[B(t)W(t)] = 0
+        \end{equation*}
+      \begin{solution}
+        We first note that $dB(t) = B(t+dt) - B(t) = \int^{t+dt}_t sign(W(s)) dW(s) = sign(W(t))dW(t)$
+        \begin{align*}
+          d[B(t)W(t)] = sign(W(t))dW(t)W(t) + B(t)dW(t) + sign(W(t))dW(t)dW(t)
+        \end{align*}
+        We integrate both sides from $0$ to $t$ to get:
+        \begin{align*}
+          B(t)W(t) - B(0)W(0) &= \int^t_0 d[B(s)W(s)] ds \\
+          &= \int^t_0 W(s)dB(s) + \int^t_0 B(s) dW(s) + \int^t_0 dW(s)dB(s)
+        \end{align*}
+        We take expectation to get:
+        \begin{align*}
+          \ee[B(t)W(t)] &= \ee[\int^t_0 W(s)sign(W(s)) dW(s) + \int^t_0 B(s) dW(s) + \int^t_0 sign(W(s))dW(s)dW(s)] \\
+          &= \ee[\int^t_0 W(s)sign(W(s)) dW(s)] + \ee[\int^t_0 B(s) dW(s)] + \ee[\int^t_0 sign(W(s)) ds] \\
+          &= 0 + 0 + \ee[\int^t_0 sign(W(s)) ds] \\
+          &= \int^t_0 \ee[sign(W(s))] ds \\
+          &= \int^t_0 \big(1\cdot \frac{1}{2} + (-1) \cdot \frac{1}{2} \big) ds = 0
+        \end{align*}
+      \end{solution}
+    \item Verify that
+      \begin{equation*}
+        dW^2(t) = 2W(t)dW(t) + dt
+      \end{equation*}
+      \begin{solution}
+        \begin{align*}
+          d(W^2(t)) = dW(t)W(t) + W(t)dW(t) + dW(t)dW(t) = 2W(t)dW(t) + dt
+        \end{align*}
+      \end{solution}
+    \item Use Ito product's rule to $d[B(t)W^2(t)]$. Deduce that
+      \begin{equation*}
+        \ee[B(t)W^2(t)] \text{ is not equal to } \ee[B(t)]\ee[W^2(t)]
+      \end{equation*}
+      \begin{solution}
+        \begin{align*}
+          &d[B(t)W^2(t)] \\
+          &= dB(t)W^2(t) + B(t)d(W^2(t)) + dB(t)d(W^2(t))\\
+          &= dB(t)W^2(t) + B(t)(2W(t)dW(t) + dt) + dB(t)(2W(t)dW(t) + dt) \\
+          &=  \bigg(sign(W(t))W^2(t) + B(t)2W(t)\bigg) dW(t) + B(t)dt + sign(W(t))dW(t)dt + \\
+          &+ sign(W(t))dW(t)2W(t)dW(t) \\
+          &=  \bigg(sign(W(t))W^2(t) + B(t)2W(t)\bigg) dW(t) + B(t)dt + 0 + sign(W(t))2W(t)dt \\
+          &= \bigg(sign(W(t))W^2(t) + B(t)2W(t)\bigg) dW(t) + \bigg(B(t) + sign(W(t))2W(t)\bigg) dt \\
+        \end{align*}
+        We take integration over 0 to $t$ and expectation to get:
+        \begin{align*}
+          &\ee[B(t)W^2(t)] \\
+          &= B(0)W^2(0) + \ee[\int^t_0 \bigg(sign(W(s))W^2(s) +B(s)2W(s)\bigg) dW(s) + \\
+          &+ \int^t_0 \bigg(B(s) + sign(W(s))2W(s)\bigg) ds] \\
+          &= 0 + \ee[\int^t_0 \bigg(B(s) + sign(W(s))2W(s)\bigg) ds] \\
+          &= \int^t_0 \ee[B(s) + sign(W(s))2W(s)] ds \\
+          &= \int^t_0 \ee[sign(W(s))2W(s)] ds \\
+          &= 2\int^t_0 \ee[|W(s)|] ds
+        \end{align*}
+        We note that $\ee[B(t)]\ee[W^2(t)] = 0$ so that if $\ee[B(t)W^2(t)] = \ee[B(t)]\ee[W^2(t)]$,
+        $2 \int^t_0 \ee[|W(s)|] ds = 0 \Rightarrow W(s) = 0 \forall s \in [0,t]$. But this is evidently not true.
+        It then follows that:
+        \begin{equation*}
+          \ee[B(t)W^2(t)] \text{ is not equal to } \ee[B(t)]\ee[W^2(t)]
+        \end{equation*}
+      \end{solution}
+    \item Conclude
+      \begin{solution}
+        We can conclude that $B(t)$ and $W^2(t)$ are not independent random processes.
+      \end{solution}
+  \end{enumerate}
+
+\noindent{\bf Problem 5}
+  \par{In the Hull-white interest rate model, the interest rate is given by the stochastic
+  differential equation}
+  \begin{equation*}
+    dR(t) = (a(t) - b(t)R(t))dt + \sigma(t) d\tilde{W}(t)
+  \end{equation*}
+  where $a(t), b(t), R(t), \sigma(t)$ are nonrandom positive functions and $\tilde{W}$ is a
+  standard Brownian motion under a risk-neutral probability measure. Assume that the initial
+  condition is given at time $t$ by $R(t) = r$. The goal of this exercise is to solve this
+  equation explicitly.
+
+  \begin{enumerate}
+    \item First of all, compute, by using Ito-Doeblin formula
+      \begin{equation*}
+        d(e^{\int^u_0 b(v) dv}R(u))
+      \end{equation*}
+      \begin{solution}
+        As $b(t)$ is nonrandom, we don't need the Ito-Doeblin formula and proceed with standard product rule:
+        \begin{align*}
+          d(e^{\int^u_0 b(v) dv}R(u)) = d(e^{\int^u_0 b(v) dv})R(u) + e^{\int^u_0 b(v) dv}d(R(u)) \\
+          = b(u)e^{\int^u_0 b(v) dv} R(u) du + e^{\int^u_0 b(v) dv}((a(u) - b(u)R(u))du + \sigma(u) d\tilde{W}(u)) \\
+          = e^{\int^u_0 b(v) dv}a(u)du + e^{\int^u_0 b(v) dv}\sigma(u) d\tilde{W}(u)
+        \end{align*}
+      \end{solution}
+    \item Integrate both sides of the formula found above from $t$ to $T$ and use the initial
+      condition $R(t) = r$ to find the formula
+      \begin{equation*}
+        e^{\int^T_0 b(v) dv} R(T) = re^{\int^u_0 b(v)dv} + \int^T_0 e^{\int^u_0 b(v)dv} a(u)du
+        + \int^T_0 e^{\int^t_0 b(v)dv} \sigma(u) d\tilde{W}
+      \end{equation*}
+      \begin{solution}
+        We integrate both sides from $t$ to $T$ for:
+        \begin{align*}
+          e^{\int^T_0 b(v) dv}R(T) - e^{\int^t_0 b(v) dv}R(t) = \int^T_t e^{\int^u_0 b(v) dv}a(u)du + \int^T_t e^{\int^u_0 b(v) dv}\sigma(u) d\tilde{W}(u) \\
+          e^{\int^T_0 b(v) dv}R(T) = re^{\int^t_0 b(v) dv} + \int^T_t e^{\int^u_0 b(v) dv}a(u)du + \int^T_t e^{\int^u_0 b(v) dv}\sigma(u) d\tilde{W}(u)
+        \end{align*}
+      \end{solution}
+    \item Solve the above formula for $R(T)$. This yields an explicit formula for $R(T)$
+      \begin{solution}
+        \begin{align*}
+          R(T) &= \frac{re^{\int^t_0 b(v) dv} + \int^T_t e^{\int^u_0 b(v) dv}a(u)du + \int^T_t e^{\int^u_0 b(v) dv}\sigma(u) d\tilde{W}(u))}{e^{\int^T_0 b(v) dv}} \\
+          &= \frac{re^{\int^t_0 b(v) dv} + \int^T_t e^{\int^u_0 b(v) dv}a(u)du + \int^T_t e^{\int^u_0 b(v) dv}\sigma(u) d\tilde{W}(u))}{e^{\int^T_0 b(v) dv}} \\
+          &= re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du + \int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u))
+        \end{align*}
+      \end{solution}
+    \item Give the distribution of $R(T)$
+      \begin{solution}
+        We note that as $b(t), a(t), \sigma(t)$ are nonrandom functions, $re^{-\int^T_t b(v) dv}$ and $\int^T_t e^{-\int^T_u b(v) dv}a(u)du$ are constants. We then note that
+        the randomness of $R(T)$ comes from $\int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u) = \sum^n_{j=1} e^{-\int^T_{t_{j}} b(v) dv} \sigma(t_{j})\cdot (W(t_{j}) - W(t_{j-1}))$.
+        Where the sequence $t = t_1 < t_2 < \cdots < t_n = T$ represents a partition of $[t, T]$ with mesh converging to zero.
+        It then follows that $R(T)$ follows a normal distribution as the sum of separately scaled independent wiener increments which are normal.
+      \end{solution}
+    \item Give also its mean and variance.
+      \begin{solution}
+        We first observe that the mean is:
+        \begin{align*}
+          \ee[R(T)] &= \ee[re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du + \int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)] \\
+          &= re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du + \ee[\int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)] \\
+          &= re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du + 0 \\
+          &= re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du
+        \end{align*}
+        And that the variance is:
+        \begin{align*}
+          Var[R(T)] &=  Var[re^{-\int^T_t b(v) dv} + \int^T_t e^{-\int^T_u b(v) dv}a(u)du + \int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)] \\
+          &= Var[\int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)] \\
+          &= \ee[\big(\int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)\big)^2] - \bigg(\ee[\int^T_t e^{-\int^T_u b(v) dv}\sigma(u) d\tilde{W}(u)]\bigg)^2 \\
+          &= \ee[\int^T_t \big(e^{-\int^T_u b(v) dv}\sigma(u)\big)^2 du] - 0 \\
+          &= \ee[\int^T_t e^{-2\int^T_u b(v) dv}\sigma^2(u) du] \\
+          &= \int^T_t e^{-2\int^T_u b(v) dv}\sigma^2(u) du
+        \end{align*}
+      \end{solution}
+  \end{enumerate}
+
+
+\end{document}
