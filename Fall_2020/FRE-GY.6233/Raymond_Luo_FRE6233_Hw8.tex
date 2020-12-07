@@ -1,0 +1,306 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 8}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent{\bf Problem 1}
+  \begin{itemize}
+    \item Fill the gaps in getting the BS formula (17) calculating the integral (16)
+
+      \begin{solution}
+        We start with integral (16):
+        \begin{equation*}
+          u(x,\tau) = \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} u_0(y\sqrt{2\tau}+x)e^{-y^2/2}dy
+        \end{equation*}
+        It's straightforward to note that for $y > -x/\sqrt{2\tau}$,
+        and that $y\sqrt{2\tau} + x > 0 \Rightarrow u(y\sqrt{2\tau}) > 0$. This means that:
+        \begin{align*}
+          &u(x,\tau) = \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} \bigg(e^{\frac{1}{2}(k_1 + 1)(y\sqrt{2\tau}+x)} - e^{\frac{1}{2}(k_1 - 1)(y\sqrt{2\tau}+x)} \bigg)e^{-y^2/2}dy \\
+          &= I_1 - I_2 \\
+          &\text{ where we have:}\\
+          & I_1 := \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{\frac{1}{2}(k_1 + 1)(y\sqrt{2\tau}+x) - y^2/2} dy \\
+          & I_2 := \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{\frac{1}{2}(k_1 - 1)(y\sqrt{2\tau}+x) - y^2/2} dy
+        \end{align*}
+        Note that we can complete the square of the exponents (in terms of $y$) as follows:
+        \begin{align*}
+          &\frac{1}{2}(k_1 + 1)(y\sqrt{2\tau}+x) - y^2/2 = \frac{1}{2}\bigg((k_1 + 1)y\sqrt{2\tau} - y^2\bigg) + \frac{(k_1 + 1)x}{2} \\
+          &= \frac{1}{2}\bigg(-\frac{(k_1+1)^2}{2}\tau + (k_1 + 1)y\sqrt{2\tau} - y^2\bigg) + \frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2} \\
+          &= \frac{-1}{2}\bigg(\frac{(k_1 + 1)}{2}\sqrt{2\tau} - y \bigg)^2 + \frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}
+        \end{align*}
+        Likewise, we have:
+        \begin{align*}
+          &\frac{1}{2}(k_1 - 1)(y\sqrt{2\tau}+x) - y^2/2 = \frac{1}{2}\bigg((k_1 - 1)y\sqrt{2\tau} - y^2\bigg) + \frac{(k_1 - 1)x}{2} \\
+          &= \frac{1}{2}\bigg(-\frac{(k_1-1)^2}{2}\tau + (k_1 - 1)y\sqrt{2\tau} - y^2\bigg) + \frac{(k_1-1)^2}{4}\tau + \frac{(k_1 - 1)x}{2} \\
+          &= \frac{-1}{2}\bigg(\frac{(k_1 - 1)}{2}\sqrt{2\tau} - y \bigg)^2 + \frac{(k_1-1)^2}{4}\tau + \frac{(k_1 - 1)x}{2}
+        \end{align*}
+        With these completed squares, we can evaluate $I_1, I_2$ as follows:
+        \begin{align*}
+          I_1 &= \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{\frac{1}{2}\bigg(\frac{(k_1 + 1)}{2}\sqrt{2\tau} - y \bigg)^2 + \frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}} dy \\
+          &= e^{\frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}} \cdot \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{-\frac{1}{2}\bigg(\frac{(k_1 + 1)}{2}\sqrt{2\tau} - y \bigg)^2} \\
+          &\text{ Note that with a change of variable $y' = y - \frac{(k_1 + 1)}{2}\sqrt{2\tau}$} \\
+          &= e^{\frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}} \cdot \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-d_1} e^{-(y')^2/2} \\
+          I_2 &= \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{\frac{1}{2}\bigg(\frac{(k_1 - 1)}{2}\sqrt{2\tau} - y \bigg)^2 + \frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}} dy \\
+          &= e^{\frac{(k_1-1)^2}{4}\tau + \frac{(k_1 - 1)x}{2}} \cdot \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-x/\sqrt{2\tau}} e^{-\frac{1}{2}\bigg(\frac{(k_1 - 1)}{2}\sqrt{2\tau} - y \bigg)^2} \\
+          &\text{ Note that with a change of variable $y' = y - \frac{(k_1 - 1)}{2}\sqrt{2\tau}$} \\
+          &= e^{\frac{(k_1-1)^2}{4}\tau + \frac{(k_1 - 1)x}{2}} \cdot \frac{1}{2\sqrt{\pi}}\int^{\infty}_{-d_2} e^{-(y')^2/2} \\
+          &\text{ where $d_1 = \frac{x}{2\tau} + \frac{k_1 + 1}{2}\sqrt{2\tau}$ and $d_2 = \frac{x}{2\tau} + \frac{k_1 - 1}{2}\sqrt{2\tau}$ so that:} \\
+          &I_1 = e^{\frac{(k_1+1)^2}{4}\tau + \frac{(k_1 + 1)x}{2}} \cdot \Phi(d_1) \\
+          &I_2 = e^{\frac{(k_1-1)^2}{4}\tau + \frac{(k_1 - 1)x}{2}} \cdot \Phi(d_2)
+        \end{align*}
+      \end{solution}
+
+    \item Using (16), derive the formula for a \textit{digital option}, which pays maturity
+      \begin{align*}
+        c(S,T) =
+        \begin{cases}
+          1 \text{ dollar} & \text{ if } S \geq K \\
+          0 & \text{ if } S < K
+        \end{cases}
+      \end{align*}
+
+      \begin{solution}
+        We observe that the value of the digital option follows the same PDE as the value of the call option; however, the terminal condition
+        of the PDE is modified to be $c(S,T) = \frac{1}{S-K}\big(S - K\big)^+$. This then modifies the initial conditions of our PDE after
+        the transformations to get (16). We now have:
+        \begin{align*}
+          u_0(x) &= \frac{1}{S-K}\max\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1)x}, 0 \bigg) \\
+          &= \frac{1}{K(e^{x} - 1)}\max\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1)x}, 0 \bigg) \\
+          &= \frac{1}{K(e^{x} - 1)}\max\bigg(e^{\frac{1}{2}(k_1 - 1)x}(e^{x} - 1) ,0\bigg)
+        \end{align*}
+        Note that for $y > -x/\sqrt{2\tau} \Rightarrow y\sqrt{2\tau} + x > 0$, we have that $e^{y\sqrt{2\tau} + x} > 0$ so that we can simplify the
+        above equation to get $u_0(y\sqrt{2\tau} + x) = \frac{1}{K}\max\bigg(e^{\frac{1}{2}(k_1 - 1)y\sqrt{2\tau} + x} ,0\bigg) = \frac{1}{K}e^{\frac{1}{2}(k_1 - 1)y\sqrt{2\tau} + x}$.
+        We can then substitute this into our integral (16) to get:
+        \begin{align*}
+          u(x,\tau) = \frac{1}{\sqrt{2\pi}} \int^{\infty}_{-x/\sqrt{2\tau}} u_0(y\sqrt{2\tau} + x)e^{-y^2/2} dy\\
+          = \frac{1}{\sqrt{2\pi}} \int^{\infty}_{-x/\sqrt{2\tau}} \frac{1}{K}e^{\frac{1}{2}(k_1 - 1)(y\sqrt{2\tau} + x)}e^{-y^2/2} dy \\
+          = \frac{1}{K}I_2 \text{ where $I_2$ is the integral defined before}
+        \end{align*}
+        We then have the same substitutions in the normal BS derivation:
+        \begin{align*}
+          v &= e^{-\frac{1}{2}(k-1)x-\frac{1}{4}(k+1)^2\tau}u(\tau,x) \\
+          &= e^{-\frac{1}{2}(k-1)x-\frac{1}{4}(k+1)^2\tau}\cdot e^{\frac{1}{2}(k-1)x+\frac{1}{4}(k-1)^2\tau}\frac{1}{K}\Phi(d_2) \\
+          &= \frac{1}{K}e^{-\frac{4k_1}{4}\tau}\Phi(d_2) = \frac{1}{K}e^{-\frac{r}{1/2\sigma^2}\tau}\Phi(d_2) \\
+          &= \frac{1}{K}e^{-\frac{r}(T-t)}\Phi(d_2) \\
+          &\Rightarrow \\
+          c &= Kv(x,\tau) = e^{-r(T-t)}\Phi(d_2)
+        \end{align*}
+        So that we have that the value of the digital option is \\
+        $c(t,S) = e^{-r(T-t)}\Phi(d_2)$ where $d_2 = \frac{\ln(S/K)+(r-\frac{1}{2}\sigma^2)(T-t)}{\sigma\sqrt{T-t}}$
+      \end{solution}
+  \end{itemize}
+
+
+\noindent{\bf Problem 2}
+  \par{Derive BS PDE for a call option on a stock with continuous dividend rate, following the same arguments
+  as for BS PDE (set up a riskless portfolio, etc). Prove that its value is given by (19) based on the BS formula (17)
+  and the connection between the two cases.}
+
+  \begin{solution}
+    Suppose that our asset pays dividends at a constant rate $q$ so that $dS = \alpha S(t) dt + \sigma S(t) dW(t) - q S(t)dt
+    = (\alpha - q)S(t) dt + \sigma S(t) dW(t)$. We proceed similarly by choosing a portfolio with $\Delta(t)$ shares of stock
+    and $X(t) - \Delta(t)S(t)$ investments in market account. Note that at time $t$, we also have $q\Delta S$ dividend so that the evolution of the portfolio is now:
+    \begin{align*}
+      dX(t) &= \Delta(t)dS(t) + r(X(t) - \Delta(t)S(t))dt + q\Delta S(t)dt \\
+      &= \Delta(t)\big((\alpha - q)S(t) dt + \sigma S(t) dW(t)\big) + r(X(t) - \Delta(t)S(t))dt + q\Delta S(t)dt \\
+      &= rX(t)dt + \Delta(t)(\alpha - r)S(t)dt + \Delta(t)\sigma S(t)dW(t)
+    \end{align*}
+    We assume that our portfolio can replicate the option at all times by $X(t) = c(t,S(t))$ for all $0 \leq t \leq T$ with
+    $X(0) = c(0,S(0)), d(X(t)-c(t,S(t))) = 0$ so that :
+    \begin{align*}
+      &c_t dt + c_s dS(t) + \frac{1}{2} c_{ss}(dS(t))^2 \\
+      & \qquad \qquad = rX(t)dt + \Delta(t)(\alpha - r)S(t)dt + \Delta(t)\sigma S(t)dW(t)\\
+      &c_t dt + c_s ((\alpha - q)S(t) dt + \sigma S(t) dW(t)) + \frac{1}{2}c_{ss} S^2(t)\sigma^2 dt \\
+      & \qquad \qquad = rX(t)dt + \Delta(t)(\alpha - r)S(t)dt + \Delta(t)\sigma S(t)dW(t) \\
+      &c_t dt + c_s ((\alpha - q)S(t) dt + \sigma S(t) dW(t)) + \frac{1}{2}c_{ss} S^2(t)\sigma^2 dt \\
+      & \qquad \qquad = rc(t,S(t))dt + \Delta(t)(\alpha - r)S(t)dt + \Delta(t)\sigma S(t)dW(t)\\
+    \end{align*}
+    By choosing $c_x(t,S(t)) = \Delta(t)$, we have that:
+    \begin{align*}
+      &rc(t,S(t))dt = c_t dt + (r c_s - q c_s)S(t) dt + \frac{1}{2} S^2(t)\sigma^2 c_{ss} dt \\
+      &rc(t,S(t)) = c_t + (r - q)S(t)c_s + \frac{1}{2} S^2(t)\sigma^2 c_{ss} \\
+    \end{align*}
+    We have terminal condition $c(T,S(T)) = (S - K)^+$. We proceed with the same transformations as before ($S = Ke^{x},t = T - \frac{\tau}{\frac{1}{2}\sigma^2}, c(t,S)=Kv(x,\tau)$)
+    but with $k_1 = \frac{r-q}{\frac{1}{2}\sigma^2}$. We then get:
+    \begin{align*}
+       rv= \frac{-\sigma^2}{2} v_\tau + (r-q) v_x + \frac{\sigma^2}{2} \big(v_{xx} - v_x \big) \\
+       \frac{\partial v}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}
+        + \bigg(\frac{2(r-q)}{\sigma^2} - 1\bigg)\frac{\partial v}{\partial x} - \frac{2r}{\sigma^2}v
+    \end{align*}
+    We then use change of variable $v(\tau,x) = exp(\alpha x + \beta \tau)u(\tau, x)$ to get:
+    \begin{align*}
+      \beta u + \frac{\partial u}{\partial \tau} &= \alpha^2u + \frac{\partial^2 v}{\partial x^2} + (\frac{2(r-q)}{\sigma^2} - 1)
+        \big(\alpha u + \frac{\partial u}{\partial x} \big) - \frac{2r}{\sigma^2} u
+    \end{align*}
+    In order to get terms to vanish, we choose $\alpha, \beta$ by:
+    \begin{align*}
+      \begin{cases}
+        &u(\beta - \alpha^2 - (\frac{2(r-q)}{\sigma^2} - 1)\alpha + \frac{2r}{\sigma^2}) = 0 \\
+        &\frac{\partial u}{\partial x} (2\alpha + (\frac{2(r-q)}{\sigma^2} - 1)) = 0
+      \end{cases}
+      &\Rightarrow \\
+      \begin{cases}
+        &\alpha = \frac{1}{2} - \frac{r-q}{\sigma^2} \\
+        &\beta = -\frac{1}{4}(\frac{2(r-q)}{\sigma^2} - 1)^{2}-\frac{2r}{\sigma^2} = -\frac{1}{4}(\frac{2(r-q)}{\sigma^2} + 1)^{2}-\frac{2q}{\sigma^2}
+      \end{cases}
+    \end{align*}
+    We let $k_1 = \frac{2(r-q)}{\sigma^2}$ so that $v(x,\tau) = e^{\frac{-2q}{\sigma^2}\tau}\cdot exp(\frac{-1}{2}(k_1 - 1) x + \frac{-1}{4}(k_1 + 1)^2 \tau)u(x, \tau)$.
+    Note that at the boundary condition, our initial condition looks the same with \\
+    $v(x, 0) = e^{-\alpha x}\max\bigg(e^{x}-1,0 \bigg) = \max\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1) x}, 0 \bigg)$. \\
+    As our differential equation looks the same with boundary conditions of the same form (here $k_1$ is modified), we have the same general solution as before.
+    \begin{align*}
+     u(x,\tau) &= I_1 - I_2 \\
+     &\text{ where $I_1, I_2$ are defined the same as before but with the new $k_1$} \\
+     v(x,\tau) &= e^{\frac{-2q}{\sigma^2}\tau}\cdot exp(\frac{-1}{2}(k_1 - 1) x + \frac{-1}{4}(k_1 + 1)^2 \tau)u(x, \tau) \\
+     &= e^{\frac{-2q}{\sigma^2}\tau}\bigg(e^{\frac{(k_1 + 1)x}{2} + \frac{-1}{2}(k_1 - 1) x} \cdot \Phi(d_1) + e^{\frac{(k_1-1)^2}{4}\tau + \frac{-1}{4}(k_1 + 1)^2 \tau} \cdot \Phi(d_2) \bigg) \\
+     &= e^{\frac{-2q}{\sigma^2}\tau}\bigg(e^{x} \cdot \Phi(d_1) + e^{-k_1\tau} \cdot \Phi(d_2) \bigg) \\
+     &= e^{\frac{-2q}{\sigma^2}\tau}\bigg(e^{x} \cdot \Phi(d_1) + e^{-\frac{2(r-q)}{\sigma^2}\tau} \cdot \Phi(d_2) \bigg) \\
+     c(s,t) &= Kv(x,\tau) \\
+     &= Ke^{\ln(S/K)\cdot(-q(T-t))} \cdot \Phi(d_1) + Ke^{-r(T-t)} \cdot \Phi(d_2) \\
+     &= Se^{-q(T-t)} \cdot \Phi(d_1) + Ke^{-r(T-t)} \cdot \Phi(d_2) \\
+    \end{align*}
+    Where $d_1 =  \frac{x}{2\tau} + \frac{k_1 + 1}{2}\sqrt{2\tau} = \frac{x}{2\tau} + \frac{\frac{2(r-q)}{\sigma^2} + 1}{2}\sqrt{2\tau} = \frac{\ln(S/K) + (r-q+\frac{1}{2}\sigma^2)(T-t)}{\sigma\sqrt{T-t}}$ \\
+    $d_2 = d_1 - \sigma^2\sqrt{T-t}$
+  \end{solution}
+
+\noindent{\bf Problem 3}
+  \par{Suppose a put option costs more than its valued derived from a call option with the same strike and maturity,
+  so put-call parity:}
+
+  \begin{equation*}
+    p(t,S) > c(t,S) + e^{-r(T-t)}K-S
+  \end{equation*}
+Show details (strategy) how one could explore the arbitrage.
+
+\begin{solution}
+  We have the following arbitrage opportunity: \\
+  At time $t$, we short a put-option as well as one share of stock for $p(t,S) + S$ and long a call-option for $c(t,S)$.
+  In order to finance this strategy, we invest/borrow the difference $p(t,S) + S - c(t,S)$ with interest rate $r$. \\
+  At time of maturity $T$, we receive/pay $(p(t,S) + S - c(t,S))e^{-r(T-t)}$ have the following situations:
+    \begin{itemize}
+      \item $S > K$, we exercise the call option to pay $K$ to purchase a stock share to pay back our stock shorting. The put option is void in this case.
+      \item $S < K$, so our call option is void in this case. The holder of the put-option exercises his or her option so we purchase said stock share
+        for $K$ to pay back our stock shorting.
+    \end{itemize}
+    In both scenarios, we have a net gain of $(p(t,S) + S - c(t,S))e^{-r(T-t)} - K > 0$ according to our inequality. As we have greater than zero net gain
+    with probability 1 starting from 0 initial wealth, we have an arbitrage situation. 
+\end{solution}
+
+\noindent{\bf Problem 4}
+  \par{Consider a call option on the underlying future $F=40$ with strike $K=45$ and time to the option expiry
+  $T=1$ (year), today time $t=0$. Assume that the volatility of the underlying future is not constant, but depends on time
+  in the following way:}
+
+  \begin{equation*}
+    \sigma(t,T) = \sigma_0 e^{-B(T-t)}, 0 < t \leq T
+  \end{equation*}
+  where $B=0.2$ (per year). Assume that $r=0$. We know that the option is quoted for 3.2. \\
+  \textit{What should be the value of $\sigma_0$ so that we match the quoted price?}
+
+  \begin{solution}
+    We note that the implied volatility over the life time of the future is \\
+    $\xoverline{\sigma}(0,T) = \sqrt{\frac{1}{T}\int^T_0 \sigma^{2}(s,T) dt} = \sqrt{\frac{1}{T}\int^T_0 \sigma^2_0 e^{-2B(T-s)} dt} $. \\
+    From our quoted price, we can retrieve the implied volatility according to our underlying BS Model. We can do so using Newton-Raphson's
+    Method to iteratively find a solution $\xoverline{\sigma}$ which makes $f(\sigma) - 3.2 = 0$. This process is iterative with guesses of $x_n$
+    by $x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$. The code we used to implement Newton's method is captured as follows:
+    \begin{solution}
+      \begin{figure}[H]
+        \centering
+          \includegraphics[width=3in]{Hw8_1a}
+      \end{figure}
+    \end{solution}
+    We find that $\xoverline{\sigma} = 31.61\%$ ($\xoverline{\sigma}^2 = 9.991\%$). So that:
+    \begin{align*}
+      \xoverline{\sigma}^2 = \frac{1}{T} \big[\frac{\sigma^2_0}{2B} e^{-2B(T-s)}\big]^T_0 \\
+      \sigma_0 = \sqrt{\frac{2B\xoverline{\sigma}^2}{1 - e^{-2BT}}} = 34.82\%
+    \end{align*}
+  \end{solution}
+
+
+\end{document}

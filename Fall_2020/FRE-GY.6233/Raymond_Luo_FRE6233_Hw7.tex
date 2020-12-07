@@ -1,0 +1,294 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 7}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent {\bf Problem 1}
+  \par{Consider the same problem, as on slides 7 and 8 and generalize the strategy to replicate the call option with strike $K = 5,
+  S_0 = 4, r = 0.25$ per period, probabilities of tail or head $p = q = \frac{1}{2}$}
+
+\begin{equation*}
+  S_1(H) = 8, S_1(T) = 2, S_2(HH) = 16, S_2(HT) = S_2(TH) = 4, S_2(TT) = 1
+\end{equation*}
+
+  \par{The option now expiring at period 2. You need to adjust the delta position in stock at time 1 (depending on the outcome of the
+  first toss). Ultimately, as in the example in the lecture, the position in the stock and money market should perfectly replicate
+  the option payoff along any path.}
+  \\
+
+  \begin{solution}
+    We have the following call option payoffs:
+    \begin{equation*}
+      C_2(HH) = 11, C_2(HT) = C_2(TH) = C_2(TT) = 0
+    \end{equation*}
+    As according to the Fundamental Theorem of Asset Pricing, the extended market with our call option is arbitrage-free if it satisfies
+    that the discounted value of the call option is a martingale. We then have:
+    \begin{align*}
+      C_1(H) = \ee^{\mathbf{P}}[C_2/(1+r)] = \frac{1}{1+r}\big[pC_2(HH) + qC_2(HT)\big] = \frac{4}{5}\cdot(\frac{1}{2}\cdot 11 + \frac{1}{2}\cdot 0) = \$ 4.4 \\
+      C_1(T) = \ee^{\mathbf{P}}[C_2/(1+r)] = \frac{1}{1+r}\big[pC_2(TT)) + qC_2(TT)\big] = \frac{4}{5}\cdot(\frac{1}{2}\cdot 0 + \frac{1}{2}\cdot 0) = \$ 0
+    \end{align*}
+    And time 0 pricing of the call option at:
+    \begin{equation*}
+      C_0 = \ee^{\mathbf{P}}[C_1/(1+r)] = \frac{1}{1+r}\big[pC_1(H) + qC_2(T)\big] = \frac{4}{5}\cdot(\frac{1}{2}\cdot 4.4 + \frac{1}{2}\cdot 0) = \$ 1.76
+    \end{equation*}
+    From this, we can create a replicating portfolio by buying $\delta(s,t)$ shares of stock where $s$ is the price of the stock at time $t$.
+    We then have:
+    \begin{align*}
+      2s \cdot \delta(s,t) + B(t)\cdot(1+r) &= v(2s, t+1) \\
+      s/2 \cdot \delta(s,t) + B(t)\cdot(1+r) &= v(s/2, t+1) \\
+      &\Rightarrow \\
+      \delta(s,t) &= \frac{v(2s,t+1) - v(s/2, t+1)}{2s - s/2}
+    \end{align*}
+    where $v(s,t)$ is the value of call option at time $t$ when the stock price is at $s$. We then have:
+    \begin{align*}
+      \delta(4, 0) = \frac{4.4 - 0}{8 - 2} = 0 .73\\
+      \delta(8, 1) = \frac{11 - 0}{16 - 4} = 0.92\\
+      \delta(2, 1) = \frac{0 - 0}{4 - 1} = 0
+    \end{align*}
+
+  \end{solution}
+
+\noindent {\bf Problem 2}
+\par{Work with the BS PDE (3), slide 19}
+
+\begin{enumerate}
+  \item Show details how to get from BS equation (3) to the simpler equation (8) by changing variables and the function as in (7) on
+    the slide 19. Take a proper care of the second derivative $\frac{\partial^2}{\partial x^2}$ through original derivatives
+    $\frac{\partial^2}{\partial S^2}$ and $\frac{\partial}{\partial S}$
+      \begin{solution}
+        We take the following change of variables:
+        \begin{equation*}
+          S = Ke^x, t = T - \frac{\tau}{\frac{1}{2}\sigma^2}, c(t,S) = Kv(x, \tau)
+        \end{equation*}
+        So that we observe:
+        \begin{align*}
+          c(t,S) = Kv(\ln(\frac{S}{K}), \frac{\sigma^2}{2}(T-t))
+        \end{align*}
+        We then have the following by differentiating:
+        \begin{align*}
+          \frac{\partial c}{\partial t} = \frac{\partial \tau}{\partial t} \cdot \frac{\partial v}{\partial \tau}\\
+          = \frac{-\sigma^2}{2}K \frac{\partial v}{\partial \tau} \\
+          \frac{\partial c}{\partial S} = \frac{\partial x}{\partial S} \cdot \frac{\partial v}{\partial x}\\
+          = \frac{K}{S} \frac{\partial v}{\partial x} \\
+          \frac{\partial^2 c}{\partial S^2} = \frac{\partial}{\partial S} \frac{K}{S} \frac{\partial v}{\partial x} \\
+          = \frac{K}{S^2}\frac{\partial^2 v}{\partial x^2} - \frac{K}{S^2} \frac{\partial v}{\partial x} \\
+        \end{align*}
+        We can then substitute the equations back into (3) to get:
+        \begin{align*}
+          LHS &= rc(t,S) = rKv(\ln(\frac{S}{K}), \frac{\sigma^2}{2}(T-t)) \\
+          RHS &= c_t(t,S) + rSc_s(t,S) + \frac{1}{2} \sigma^2 S^2c_{ss}(t,S) \\
+          &= \frac{-\sigma^2}{2}K v_\tau + rS \frac{K}{S} v_x + \frac{1}{2} \sigma^2 S^2 \frac{K}{S^2}\big(v_{xx} - v_x \big) \\
+          &= \frac{-\sigma^2}{2}K v_\tau + rK v_x + \frac{\sigma^2}{2} K \big(v_{xx} - v_x \big) \\
+          \Rightarrow \\
+          rv &= \frac{-\sigma^2}{2} v_\tau + (r - \frac{\sigma^2}{2}) v_x + \frac{\sigma^2}{2} v_xx\\
+          \frac{\partial v}{\partial \tau} &= \frac{\partial^2 v}{\partial x^2}
+          + \bigg(\frac{2r}{\sigma^2} - 1\bigg)\frac{\partial v}{\partial x} - \frac{2r}{\sigma^2}v
+        \end{align*}
+        With $k_1 = \frac{2r}{\sigma^2}$, we get equation (8):
+        \begin{equation*}
+        \frac{\partial v}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}
+        + \bigg(k_1 - 1\bigg)\frac{\partial v}{\partial x} - k_1v
+        \end{equation*}
+      \end{solution}
+  \item Show details how to get equation (9) from equation (8), and then the PDE (10) with initial condition (11)
+    \begin{solution}
+      We use a change of variable $v(\tau, x) = exp(\alpha x + \beta \tau)u(\tau, x)$ where $\alpha, \beta$ are constants.
+      We then have:
+      \begin{align*}
+        LHS &= \frac{\partial v}{\partial \tau} \\
+        &= \frac{\partial}{\partial \tau}exp(\alpha x + \beta \tau)u(\tau, x)
+        + exp(\alpha x + \beta \tau)\frac{\partial u}{\partial \tau} \\
+        &= exp(\alpha x + \beta \tau)\bigg(\beta u + \frac{\partial u}{\partial \tau} \bigg) \\
+        RHS &= \frac{\partial^2 v}{\partial x^2} + \bigg(k_1 - 1\bigg)\frac{\partial v}{\partial x} - k_1v \\
+        &= exp(\alpha x + \beta \tau)\bigg[(\alpha^2u + \frac{\partial^2 v}{\partial x^2}) + (k_1 - 1)
+        \big(\alpha u + \frac{\partial u}{\partial x} \big) - k_1 u
+        \big)\bigg] \\
+        &\Rightarrow \\
+        \beta u + \frac{\partial u}{\partial \tau} &= \alpha^2u + \frac{\partial^2 v}{\partial x^2} + (k_1 - 1)
+        \big(\alpha u + \frac{\partial u}{\partial x} \big) - k_1 u
+      \end{align*}
+        Note that we want the equation to look a bit cleaner so we want terms to vanish by choosing:
+        \begin{align}
+          \begin{cases}
+            u(\beta - \alpha^2 - (k_1 - 1)\alpha + k_1) = 0 \\
+            \frac{\partial u}{\partial x} (2\alpha + (k_1 - 1)) = 0
+          \end{cases}
+        \end{align}
+        so from equation (2) we choose $\alpha = \frac{-1}{2}(k_1 - 1)$, which means that from (1), $\beta = \frac{-1}{4}(k_1 + 1)^2$.
+        Plugging this into our change of variable equation, we have that:\\
+        $v(\tau, x) = exp(\frac{-1}{2}(k_1 - 1) x + \frac{-1}{4}(k_1 + 1)^2 \tau)u(\tau, x)$ so that we have differential equation: \\
+        $\frac{\partial u}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}$ with boundary condition \\
+        $u(x,0) = e^{-\alpha x}\max\bigg(e^{x} - 1, 0 \bigg) = \max\bigg(e^{(1 - \alpha) x} - e^{-\alpha x}, 0 \bigg) \\
+        = \max\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1) x}, 0 \bigg)$
+    \end{solution}
+\end{enumerate}
+
+\noindent {\bf Problem 3}
+\par{Consider the BS PDE (3) on slide 17 in the last lecture}
+
+\begin{enumerate}
+  \item Check that the following are the solutions of the equation.
+    \begin{enumerate}
+      \item $AS$
+        \begin{solution}
+          If we let $c(s,t) = AS$ we have that
+          \begin{align*}
+            \frac{\partial}{\partial t} c(s,t) = 0 \\
+            \frac{\partial}{\partial s} c(s,t) = A \\
+            \frac{\partial^2}{\partial s^2} c(s,t) = 0 \\
+          \end{align*}
+          So that we have:
+          \begin{align*}
+            RHS = c_t(t,S) + rSc_s(t,S) + \frac{1}{2} \sigma^2 S^2c_{ss}(t,S) \\
+            = 0 + rS\cdot A + \frac{1}{2} \sigma^2 S^2 \cdot 0 \\
+            = rS \cdot A = r c(s,t) = LHS
+          \end{align*}
+        \end{solution}
+      \item $Ae^{rt}$, $A$ is a constant
+        \begin{solution}
+          If we let $c(s,t) = Ae^{rt}$ we have that
+          \begin{align*}
+            &\frac{\partial}{\partial t} c(s,t) = rAe^{rt} \\
+            &\frac{\partial}{\partial s} c(s,t) = 0 \\
+            &\frac{\partial^2}{\partial s^2} c(s,t) = 0 \\
+          \end{align*}
+          So that we have:
+          \begin{align*}
+            RHS &= c_t(t,S) + rSc_s(t,S) + \frac{1}{2} \sigma^2 S^2c_{ss}(t,S) \\
+            &= rAe^{rt} + rS\cdot 0 + \frac{1}{2} \sigma^2 S^2 \cdot 0 \\
+            &= rAe^{rt} = r c(s,t) = LHS
+          \end{align*}
+        \end{solution}
+    \end{enumerate}
+  \item Find the most general solution of the BS equation that has a special form
+    \begin{enumerate}
+      \item $V(S)$, so independent of time
+    \end{enumerate}
+    \begin{solution}
+      Suppose $c(s,t) = V(s)$ for some function $V$. Then, we note that $\frac{\partial c}{\partial t}=0$ so that we have:
+      \begin{align*}
+        rV(S) = rSV_s(S) + \frac{1}{2} \sigma^2 S^2V_{ss}(S)
+      \end{align*}
+      We note that this is an ODE equation by:
+      \begin{align*}
+        \frac{\sigma^2}{2r} x^2f''(x) + x f'(x) - f(x) = 0 \\
+        x^2f''(x) + k_1 xf'(x) - k_1 f(x) = 0
+      \end{align*}
+      We plug in general solution $f(x) = Ae^{iB\ln(x)}$ for constants $A, B$ so  that:
+      \begin{align*}
+        \bigg(x^2(\frac{-B^2}{x^2} - \frac{iB}{x^2}) + k_1x(\frac{iB}{x}) - k_1\bigg) \cdot Ae^{iB\ln(x)} = 0 \\
+        -B^2 - iB + ik_1B - k_1 = 0\\
+        (iB + k_1)(iB - 1) = 0\\
+        B = -i \text{ or } B = k_1 i
+      \end{align*}
+      It follows that the general solution is: $f(x) = Ae^{\ln(x)} + Ae^{-k_1 \ln(x)}$.
+    \end{solution}
+\end{enumerate}
+
+\noindent {\bf Problem 4}
+  \par{Prove that the fundamental solution (13) is indeed a solution of the heat equation (12) for $\tau > 0$}
+    \begin{solution}
+      We want to show that $u_{\delta}(x, \tau) = \frac{1}{\sqrt{\pi\tau}}e^{-\frac{x^2}{4\tau}}$ is a solution to the heat equation.
+      We have that
+      \begin{align*}
+        \frac{\partial u}{\partial \tau} = e^{-\frac{x^2}{4\tau}}\frac{\partial}{\partial \tau}\frac{1}{\sqrt{\pi\tau}} + \frac{1}{\sqrt{\pi\tau}}\frac{\partial}{\partial \tau}e^{-\frac{x^2}{4\tau}} \\
+        = e^{-\frac{x^2}{4\tau}}\cdot (\frac{-1}{2\sqrt{\pi\tau^3}}) + \frac{1}{\sqrt{\pi\tau}}\cdot (\frac{x^2}{4\tau^2}) e^{-\frac{x^2}{4\tau}}
+      \end{align*}
+      And:
+      \begin{align*}
+        \frac{\partial^2 u}{\partial x^2} = \frac{1}{\sqrt{\pi\tau}} \frac{\partial}{\partial x} \bigg(\frac{-2x}{4\tau}e^{-\frac{x^2}{4\tau}}\bigg) \\
+        = \frac{1}{\sqrt{\pi\tau}} \bigg(\frac{-2}{4\tau}e^{-\frac{x^2}{4\tau}} + \frac{4x^2}{16\tau^2}e^{-\frac{x^2}{4\tau}} \bigg)\\
+        = e^{-\frac{x^2}{4\tau}}\cdot (\frac{-1}{2\sqrt{\pi\tau^3}}) + \frac{1}{\sqrt{\pi\tau}}\cdot (\frac{x^2}{4\tau^2}) e^{-\frac{x^2}{4\tau}}
+      \end{align*}
+      As $\frac{\partial u}{\partial \tau} = \frac{\partial^2 u}{\partial x^2}$, we have shown that (13) is a solution to the heat equation.
+    \end{solution}
+
+
+\end{document}

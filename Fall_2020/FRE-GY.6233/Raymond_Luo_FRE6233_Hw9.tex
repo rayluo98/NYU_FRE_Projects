@@ -1,0 +1,216 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 9}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent{\bf Problem 1}
+  \begin{itemize}
+    \item We assume that over each of the next three years the stock price
+      either moves up by 20 percent or moves down by 20 percent .
+      The risk-free interest rate is 5 percent
+    \item Find the value of a 2-year American put with a strike price of 49
+      on a stock whose current price is 50.
+  \end{itemize}
+
+  \begin{solution}
+    We have the following binomial pricing tree: \\
+    \tikzstyle{bag} = [text width=2em, text centered]
+    \tikzstyle{end} = []
+    \begin{tikzpicture}[sloped]
+       \node (a) at ( 0,0) [bag] {$\$ 50$};
+       \node (b) at ( 4,-1.5) [bag] {$\$40$};
+       \node (c) at ( 4,1.5) [bag] {$\$60$};
+       \node (d) at ( 8,-3) [bag] {$\$32$};
+       \node (e) at ( 8,0) [bag] {$\$48$};
+       \node (f) at ( 8,3) [bag] {$\$72$};
+       \draw [->] (a) to node [below] {$(1-p)$} (b);
+       \draw [->] (a) to node [below] {$P$} (c);
+       \draw [->] (c) to node [below] {$P^2$} (f);
+       \draw [->] (c) to node [below] {$(1-p)p$} (e);
+       \draw [->] (b) to node [below] {$(1-p)p$} (e);
+       \draw [->] (b) to node [below] {$(1-p)^2$} (d);
+    \end{tikzpicture}
+    \\
+    We find that the risk-neutral measure $\mathbb{P}$ for the stock is defined by
+    $p = \pp[S_{n+1} = 1.2\cdot S_n] = \frac{1.05 - 0.8}{1.2 - 0.8} = \frac{5}{8}$ \\
+    If we denote that the value of the option at time $t$, price $S(t) = s$ as $v(t,s)$,
+    we have that:
+    \begin{align*}
+      v(2,72) &= (49- 72)^+ = \$ 0 \\
+      v(2,48) &= (49 - 48)^+ = \$ 1 \\
+      v(2,32) &= (49 - 32)^+ = \$ 17 \\
+      v(1, 60) &= \max\{\frac{1}{1+r}\big(p\cdot v(2,72) + (1-p) \cdot v(2,48)\big), (49 - 60)^+ \}
+      = \$ 0.36\\
+      v(1, 40) &= \max\{\frac{1}{1+r}\big(p\cdot v(2,32) + (1-p) \cdot v(2,48)\big), (49 - 40)^+ \}
+      = \$9 \\
+      v(0, 50) &= \max\{\frac{1}{1+r}\big(p\cdot v(1,40) + (1-p) \cdot v(1,60)\big), (49 - 50)^+ \}
+      = \$ 3.43\\
+    \end{align*}
+  \end{solution}
+
+\noindent{\bf Problem 2}
+  \par{Derive the relationship (inequality) between American call $C$
+    and put $P$ on stock with price $S$, strike $K$ (no dividends)}
+      \begin{solution}
+        We first note that we have:
+        \begin{align*}
+          &C_A - P_A \\
+          &=C_E - P_E + P_E - P_A \\
+          &=S_0 - Ke^{-r(T-t)} + P_E - P_A \\
+          &\leq S_0 - Ke^{-r(T-t)}
+        \end{align*}
+        We can derive a left-side inequality with the following arbitrage argument: \\
+        \begin{itemize}
+          \item At time $0$, we long a call option, short a put option, short the underlying stock, and borrow $K$ cash for
+           $-C_A + P_A + S_0 - K$.
+        \end{itemize}
+        In order to not have an arbitrage situation a maturity, we need this value to be less than 0 so that an arbitrage-free requirement is that
+        $S(0) - K \leq C_A - P_A$ so that we get relation:
+        \begin{equation*}
+          S(0) - K \leq C_A - P_A \leq S(0) - Ke^{-r(T-t)}
+        \end{equation*}
+      \end{solution}
+
+\noindent{\bf Problem 3}
+  \par{Consider notations}
+  \begin{equation*}
+    \tau_1 \vee \tau_2 = \max\{\tau_1, \tau_2\}, \tau_1 \wedge \tau_2 = \min\{\tau_1, \tau_2 \}
+  \end{equation*}
+  \par{Let $\tau_1$ and $\tau_2$ be stopping times w.r.t filtration $\mathcal{F}_t$. Show that
+  the following are also stopping times.}
+  \begin{enumerate}
+    \item $\tau_1 \vee \tau_2$
+      \begin{solution}
+        We have that $\{\tau_1 \leq t\}, \{\tau_2 \leq t\} \in \mathcal{F}_t$ for all $t \in T$.
+        Note that then: \\
+        $\{\tau_1 \vee \tau_2 \leq t \} = \bigcap_{i \in \{1,2\}} \{\tau_{i} \leq t\} \in \mathcal{F}_t$
+        for all $t \in T$.
+        This naturally belongs to $\mathcal{F}_t$ as the intersection of elements of the sub-sigma-algebra.
+      \end{solution}
+    \item $\tau_1 \wedge \tau_2$
+      \begin{solution}
+        We have that $\{\tau_1 \leq t\}, \{\tau_2 \leq t\} \in \mathcal{F}_t$ for all $t \in T$.
+        Note that then if we fix $t \in T$: \\
+        $\{\tau_1 \wedge \tau_2 \leq t \} = \bigcup_{i \in \{1,2\}} \{\tau_{i} \leq t\}$.
+        This naturally belongs to $\mathcal{F}_t$ as the union of elements of the sub-sigma-algebra.
+      \end{solution}
+    \item $\tau_1 + \tau_2$
+      \begin{solution}
+        We have that $\{\tau_1 \leq t\}, \{\tau_2 \leq t\} \in \mathcal{F}_t$ for all $t \in T$.
+        Note that then if we fix $t \in T$: \\
+        $\{\tau_1 + \tau_2 \leq t \} = \bigcup_{r,s \in \qq, r+s < t} \bigg( \{\tau_1 \leq s \} \cap \{\tau_2 \leq r \} \bigg)$.
+        This naturally belongs to $\mathcal{F}_t$ as the countable union of elements of the sub-sigma-algebra.
+      \end{solution}
+    \item $f(\tau), f(t)$ is a continuous increasing function satisfying $f(t) \geq t$
+      \begin{solution}
+        Note that the condition $f(t) \geq t$ for continuous increasing $f$ is equivalent to $f^{-1}(t) \leq t$
+        We have that $\{\tau \leq t\} \in \mathcal{F}_t$ for all $t \in T$.
+        Note that then if we fix $t \in T$: \\
+        $\{f(\tau) \leq t\} = \{\omega \mid f(\tau(\omega)) \leq t\} = \{\omega \mid \tau(\omega) \leq f^{-1}(t)\}
+        \in \mathcal{F}_{f^{-1}(t)}$. \\
+        As $f^{-1}(t) \leq t$, $\mathcal{F}_{f^{-1}(t)} \subseteq \mathcal{F}_{t}$ so
+        $\{f(\tau) \leq t\} \in \mathcal{F}_{t}$
+      \end{solution}
+  \end{enumerate}
+
+\noindent{\bf Problem 4}
+  \par{An European put option on a non-dividend paying stock and expiring in one year
+    is currently selling for 1.8. The stock price is 48 and the strike price is 51
+    and the risk free interest rate is 2 percent per year. Can you
+    make a riskless profit and how?}
+      \begin{solution}
+        We first note that $Ke^{-rT} - S = 51\cdot e^{-0.02} - 48= \$ 1.99 > \$1.8 = p$. We have
+        an arbitrage opportunity by the following:
+        \begin{itemize}
+          \item At time $0$, we purchase the put option for $p$ and then exercise immediately for a payoff of $K - S = 51 - 48 = 3$.
+            Our total cash flow is $-p + (K - S) = -1.8 + 3 = 1.2 > 0$.
+        \end{itemize}
+      \end{solution}
+\end{document}
