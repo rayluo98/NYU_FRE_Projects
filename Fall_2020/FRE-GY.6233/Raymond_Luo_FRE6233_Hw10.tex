@@ -1,0 +1,365 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{FRE-GY 6233: Assignment 10}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent{\bf Problem 1}
+\par{Let your initial capital $x = 200$, the total capital $A = 400$, and the probability (for "you") to win a
+dollar $p = \frac{31}{63}$. Suppose you bet 1,2,5,10,20,40 dollars each time. For each case calculate:}
+
+\begin{itemize}
+  \item The probability of winning before you lose everything
+    \begin{solution}
+      We note that for $p \neq q := \pp['Loss']$, we can deduce a closed form solution for winning
+      based on the system of equations:
+      \begin{align*}
+        \begin{cases}
+          u(x) = pu(x+1) + qu(x-1) \\
+          u(0) = 1, u(A) = 0
+        \end{cases}
+      \end{align*}
+        By the difference equation $u(x) = C_1 + C_2(q/p)^x$ to get that:
+        \begin{equation*}
+          u(x) = \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1}
+        \end{equation*}
+        From this, we have that:
+        \begin{itemize}
+          \item If we bet 1 dollars: \\
+            This is the same as plugging directly into the formula to find that:
+            \begin{align*}
+              \pp['Win' \mid X_0 = 200] &= 1 - u(200) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+              &= \frac{(32/31)^{400} - (32/31)^{200}}{(32/31)^{400}-1} = 0.001744
+            \end{align*}
+          \item If we bet 2 dollars: \\
+            This is effectively the same setup with $A' = A/2 = 200$,
+            $X_0'= X_0/2 = 100$ to find that:
+            \begin{align*}
+              \pp['Win' \mid X_0' = 100] &= 1 - u(100) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+              &= \frac{(32/31)^{200} - (32/31)^{100}}{(32/31)^{200}-1} = 0.04012
+            \end{align*}
+          \item If we bet 5 dollars: \\
+            This is effectively the same setup with $A' = A/5 = 80$,
+            $X_0'= X_0/5 = 40$ to find that:
+            \begin{align*}
+              \pp['Win' \mid X_0' = 40] &= 1 - u(40) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+              &= \frac{(32/31)^{80} - (32/31)^{40}}{(32/31)^{80}-1} = 0.21927
+            \end{align*}
+            \item If we bet 10 dollars: \\
+              This is effectively the same setup with $A' = A/10 = 40$,
+              $X_0'= X_0/10 = 20$ to find that:
+              \begin{align*}
+                \pp['Win' \mid X_0' = 20] &= 1 - u(20) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+                &= \frac{(32/31)^{40} - (32/31)^{20}}{(32/31)^{40}-1} = 0.34638
+              \end{align*}
+            \item If we bet 20 dollars: \\
+              This is effectively the same setup with $A' = A/20 = 20$,
+              $X_0'= X_0/20 = 10$ to find that:
+              \begin{align*}
+                \pp['Win' \mid X_0' = 10] &= 1 - u(10) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+                &= \frac{(32/31)^{20} - (32/31)^{10}}{(32/31)^{20}-1} = 0.42129
+              \end{align*}
+            \item If we bet 40 dollars: \\
+              This is effectively the same setup with $A' = A/40 = 10$,
+              $X_0'= X_0/40 = 5$ to find that:
+              \begin{align*}
+                \pp['Win' \mid X_0' = 5]& = u(5) = 1 - \frac{(q/p)^A - (q/p)^x}{(q/p)^A-1} \\
+                &= \frac{(32/31)^{10} - (32/31)^5}{(32/31)^{10}-1} = 0.46040
+              \end{align*}
+        \end{itemize}
+    \end{solution}
+  \item The expected duration of the game.
+    \begin{solution}
+      We note that for $p \neq q := \pp['Loss']$, we can deduce a closed form solution for winning
+      based on the system of equations:
+      \begin{align*}
+        \begin{cases}
+          D(x) = pD(x+1) + qD(x-1) + 1 \\
+          D(0) = 0, D(A) = 0
+        \end{cases}
+      \end{align*}
+        We solve inhomogeneous equation to get:
+        \begin{equation*}
+          D(x) = \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A}
+        \end{equation*}
+        From this, we have that:
+        \begin{itemize}
+          \item If we bet 1 dollars: \\
+            This is the same as plugging directly into the formula to find that:
+            \begin{align*}
+              D(200) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+              &= 200\cdot 63 + 400\cdot 63 \cdot \frac{1-(32/31)^{200}}{1-(32/31)^{400}} = 12643.95
+            \end{align*}
+          \item If we bet 2 dollars: \\
+            This is effectively the same setup with $A' = A/2 = 200$,
+            $X_0'= X_0/2 = 100$ to find that:
+            \begin{align*}
+              D(100) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+              &= 100\cdot 63 + 200\cdot 63 \cdot \frac{1-(32/31)^{100}}{1-(32/31)^{200}} = 6805.54
+            \end{align*}
+          \item If we bet 5 dollars: \\
+            This is effectively the same setup with $A' = A/5 = 80$,
+            $X_0'= X_0/5 = 40$ to find that:
+            \begin{align*}
+              D(40) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+              &= 40\cdot 63 + 80\cdot 63 \cdot \frac{1-(32/31)^{40}}{1-(32/31)^{80}} = 3625.101
+            \end{align*}
+            \item If we bet 10 dollars: \\
+              This is effectively the same setup with $A' = A/10 = 40$,
+              $X_0'= X_0/10 = 20$ to find that:
+              \begin{align*}
+                D(20) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+                &= 20\cdot 63 + 40\cdot 63 \cdot \frac{1-(32/31)^{20}}{1-(32/31)^{40}} = 2132.887
+              \end{align*}
+            \item If we bet 20 dollars: \\
+              This is effectively the same setup with $A' = A/20 = 20$,
+              $X_0'= X_0/20 = 10$ to find that:
+              \begin{align*}
+                D(10) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+                &= 10\cdot 63 + 20\cdot 63 \cdot \frac{1-(32/31)^{10}}{1-(32/31)^{20}} = 1160.82
+              \end{align*}
+            \item If we bet 40 dollars: \\
+              This is effectively the same setup with $A' = A/40 = 10$,
+              $X_0'= X_0/40 = 5$ to find that:
+              \begin{align*}
+                D(5) &= \frac{x}{q-p} + \frac{A}{q-p}\frac{1-(q/p)^x}{1-(q/p)^A} \\
+                &= 5\cdot 63 + 10\cdot 63 \cdot \frac{1-(32/31)^{5}}{1-(32/31)^{10}} = 605.05
+              \end{align*}
+        \end{itemize}
+    \end{solution}
+\end{itemize}
+Which strategy would you choose?
+  \begin{solution}
+    It appears that the best strategy is to bet with larger denominations of money for the highest chance of winning.
+  \end{solution}
+
+\noindent{\bf Problem 2}
+\par{Consider the same problem as in class, down-and-out call with barrier $X$ below strike $K$ and $S > K$.}
+
+\begin{enumerate}
+  \item Derive the formula by solving a PDE problem with a slight modification. Instead of change of variable
+    \begin{equation*}
+      S = Ke^{x}
+    \end{equation*}
+    use a change of variable
+    \begin{equation*}
+      S = Xe^{x}
+    \end{equation*}
+    Show all details
+    \begin{solution}
+      We use change of variables by $S = Xe^x, t = T - \frac{\tau}{\frac{1}{2}\sigma^2}, c(t,S) = Kv(x, \tau)$:
+      \begin{align*}
+        c(t,S) = Kv(\ln(\frac{S}{X}), \frac{\sigma^2}{2}(T-t))
+      \end{align*}
+      We then have the following by differentiating:
+      \begin{align*}
+        \frac{\partial c}{\partial t} = \frac{\partial \tau}{\partial t} \cdot \frac{\partial v}{\partial \tau}
+        = \frac{-\sigma^2}{2}K \frac{\partial v}{\partial \tau} \\
+        \frac{\partial c}{\partial S} = \frac{\partial x}{\partial S} \cdot \frac{\partial v}{\partial x}
+        = \frac{K}{S} \frac{\partial v}{\partial x} \\
+        \frac{\partial^2 c}{\partial S^2} = \frac{\partial}{\partial S} \frac{K}{S} \frac{\partial v}{\partial x}
+        = \frac{K}{S^2}\frac{\partial^2 v}{\partial x^2} - \frac{K}{S^2} \frac{\partial v}{\partial x}
+      \end{align*}
+      With $k_1 = \frac{2r}{\sigma^2}$, we get the same PDE as before:
+      \begin{equation*}
+      \frac{\partial v}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}
+      + \bigg(k_1 - 1\bigg)\frac{\partial v}{\partial x} - k_1v
+      \end{equation*}
+      Note that we can proceed as before with $v(\tau, x) = exp(\alpha x + \beta \tau)u(\tau, x)$ to get
+      \begin{align*}
+        LHS &= exp(\alpha x + \beta \tau)\bigg(\beta u + \frac{\partial u}{\partial \tau} \bigg) \\
+        RHS &= exp(\alpha x + \beta \tau)\bigg[(\alpha^2u + \frac{\partial^2 v}{\partial x^2}) + (k_1 - 1)
+        \big(\alpha u + \frac{\partial u}{\partial x} \big) - k_1 u
+        \big)\bigg] \\
+        \beta u + \frac{\partial u}{\partial \tau} &= \alpha^2u + \frac{\partial^2 v}{\partial x^2} + (k_1 - 1)
+        \big(\alpha u + \frac{\partial u}{\partial x} \big) - k_1 u
+      \end{align*}
+        Note that we choose $\alpha = \frac{-1}{2}(k_1 - 1)$, which means that from (1), $\beta = \frac{-1}{4}(k_1 + 1)^2$.
+        Plugging this into our change of variable equation, we have that:\\
+        $v(\tau, x) = exp(\frac{-1}{2}(k_1 - 1) x + \frac{-1}{4}(k_1 + 1)^2 \tau)u(\tau, x)$ so that we have differential equation: \\
+        $\frac{\partial u}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}$ with boundary condition \\
+        $u(x,0) = e^{-\alpha x}\max\bigg(e^{x} - 1, 0 \bigg)
+        = \max\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1) x}, 0 \bigg)$
+        with an additional condition that $u(log(X/K)) = 0$ \\
+        Here we use the method of images to solve for a closed-form solution of the PDE. We reflect the initial data about $x_0 = \ln(X/K)$
+        to get equations:
+        \begin{align*}
+          u(x,0) &= u_0(x)(2x_0 - x) \\
+          u(x,0) &=
+            \begin{cases}
+              \max{\bigg(e^{\frac{1}{2}(k_1 + 1)x} - e^{\frac{1}{2}(k_1 - 1)x}, 0 \bigg)} & \text{ for } x > x_0 \\
+              -\max{\bigg(e^{\frac{1}{2}(k_1 + 1)(x_0 - \frac{1}{2}x)} - e^{\frac{1}{2}(k_1 - 1)(x_0 - \frac{1}{2}x)}, 0 \bigg)} & \text{ for } x < x_0
+            \end{cases}
+        \end{align*}
+        We note that the value of call option $C(S,t) = Ke^{\alpha x + \beta \tau}u_1(x,\tau)$ and that $V(S,t)= Ke^{\alpha x + \beta \tau}(u_1(x,\tau)
+        + u_2(x,\tau))$ where $u_2(x,\tau) = -u_1(2x_0 - x, \tau)$. We then get that
+        $V(S,t) = C(S,t)- (\frac{S}{X})^{-(k_1 - 1)} C(X^2/S,t)$
+    \end{solution}
+  \item Does this formula work in the case $X > K$?
+    \begin{solution}
+      No, our method of images would fail to preserve the Black Scholes Call option pricing for the entirety of
+      $X > K$ so our closed form extension would change. Moreover,
+      if $X > K$, we effectively have a call option with strike price $X$ instead of $K$ so we wouldn't need to derive the formula in this manner.
+    \end{solution}
+\end{enumerate}
+
+
+\noindent{\bf Problem 3}
+\par{Formulate the problem for a "down-in" barrier call option: the option is activated and becomes a vanilla call option with strike $K$
+only if asset price $S$ crosses a lower barrier $X$ before expiry: the payoff is $\max{(S-K, 0)}$ if $S \leq X$ before expiry and zero otherwise.
+Assume $X < S$, $X < K$.
+
+\begin{enumerate}
+  \item Write down the formula for this option (look for connection with a "down-out" call barrier with the same barrier, strike, and expiry)
+    \begin{solution}
+      With the "down-out" call option value denoted $c_{out}$ and "down-in" call option denoted $c_{in}$, we have that:
+      \begin{equation*}
+        C(s,t) = c_{out}(s,t) + c_{in}(s,t)
+      \end{equation*}
+      So that we have that:
+      \begin{equation*}
+        c_{in}(s,t) = C(S,t) - c_{out}(s,t) =  (\frac{S}{X})^{-(k_1 - 1)} C(X^2/S,t)
+      \end{equation*}
+    \end{solution}
+  \item Calculate both "down-in" and "down-out" in the case when the call options are written on \textit{futures}, with the initial price $F = 30,
+    K = 40, T = 1$ (years), $\sigma = 0.5, r = 0.01, X = 20$.
+      \begin{solution}
+        "Down-out" Call option:
+        \begin{align*}
+          c_{out}(F = 30, t = 0) &= (\frac{30}{20})^{-(\frac{0.02}{0.5^2} - 1)} C(20^2/30,0) \\
+          &=  1.4521*0.0584 = \$ 0.0848
+        \end{align*}
+        "Down-in" Call option:
+        \begin{align*}
+          c_{in}(F = 30, t = 0) &= C(30, 0)- (\frac{30}{20})^{-(\frac{0.02}{0.5^2} - 1)} C(20^2/30,0) \\
+          &= 3.0728 - 0.0848 = \$ 2.988
+        \end{align*}
+      \end{solution}
+  \item When does "down-out" becomes practically a vanilla call?
+    \begin{solution}
+      A "down-out" call option is practically a vanilla call as long as it does not go below a barrier $X$ at any time prior to maturity.
+    \end{solution}
+\end{enumerate}
+
+
+\noindent{\bf Problem 4}
+\par{Using the method of images find a formula for an "up-out" put option with barrier $X$, with
+payoff $max(K - F, 0)$ if $F < X$ before expiry $T$ and zero otherwise. Assume $X > K, F < X$.
+Price it in the case option is written on futures, $F = 30, K = 15, X = 40, \sigma = 0.6, T = 0.5,
+r = 0.01$.}
+  \begin{solution}
+    We begin by noting that the put option has the same PDE as our call option just with modified terminal condition. \\
+    We have differential equation: \\
+        $\frac{\partial u}{\partial \tau} = \frac{\partial^2 v}{\partial x^2}$ with boundary condition \\
+        $u(x,0) = e^{-\alpha x}\max\bigg(1 - e^{x}, 0 \bigg)
+        = \max\bigg(e^{\frac{1}{2}(k_1 - 1) x} - e^{\frac{1}{2}(k_1 + 1)x}, 0 \bigg)$
+        with an additional condition that $u(log(X/K)) = 0$ \\
+    Here we use the method of images to solve for a closed-form solution of the PDE. We reflect the initial data about $x_0 = \ln(X/K)$
+    to get equations:
+    \begin{align*}
+      u(x,0) &= u_0(x)(2x_0 - x) \\
+      u(x,0) &=
+        \begin{cases}
+           \max\bigg(e^{\frac{1}{2}(k_1 - 1) x} - e^{\frac{1}{2}(k_1 + 1)x}, 0 \bigg) & \text{ for } x > x_0 \\
+          -\max{\bigg(e^{\frac{1}{2}(k_1 - 1)(x_0 - \frac{1}{2}x)} - e^{\frac{1}{2}(k_1 + 1)(x_0 - \frac{1}{2}x)}, 0 \bigg)} & \text{ for } x < x_0
+        \end{cases}
+    \end{align*}
+    This proceeds as before except now we observe that the value of put option $P(S,t) = Ke^{\alpha x + \beta \tau}u_1(x,\tau)$
+    and that $V(S,t)= Ke^{\alpha x + \beta \tau}(u_1(x,\tau)
+    + u_2(x,\tau))$ where $u_2(x,\tau) = -u_1(2x_0 - x, \tau)$. We then get that
+    $V(S,t) = P(S,t)- (\frac{S}{X})^{-(k_1 - 1)} P(X^2/S,t)$ \\
+    The "up-out" put option is price at:
+      \begin{align*}
+        V(S,T) &= V(30, 0.5) = P(30, 0.5) - (30/40)^{1-0.02/0.6^2}P(40^2/30, 0.5) \\
+        &= 0.1841 - 0.0034 =  0.1807
+      \end{align*}
+  \end{solution}
+
+
+\end{document}
