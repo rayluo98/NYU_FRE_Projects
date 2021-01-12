@@ -1,0 +1,335 @@
+\documentclass[12pt,twoside, letter]{exam}
+\usepackage{enumitem, kantlipsum}
+\usepackage[margin=1in,left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx,epstopdf}
+\usepackage{amssymb,amsmath,amsfonts, amsthm}
+\usepackage{wasysym}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning}
+\usetikzlibrary{matrix}
+\usepackage{xstring}
+\usetikzlibrary{calc}
+\usepackage{ducksay}
+\newtheorem{prop}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bbm}
+\usepackage{verbatim}
+\usepackage{bbold}
+\usepackage{phfparen}
+\usepackage{sets}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\cb}{\mathcal{B}}
+\newcommand{\ctau}{\mathcal{T}}
+\newcommand{\co}{\mathcal{O}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\ee}{\mathbb{E}}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\interior}{\text{Int}}
+\newcommand{\pp}{\mathbb{P}}
+\newcommand{\id}{\mathbbm{1}}
+\newcommand{\Co}{\text{Co}}
+\newcommand{\Cl}{\text{Cl}}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\usepackage{indentfirst}
+\setlist{
+    listparindent = \parindent,
+    parsep = 6pt,
+}
+
+\makeatletter
+\newsavebox\myboxA
+\newsavebox\myboxB
+\newlength\mylenA
+
+\newcommand*\xoverline[2][0.9]{%
+    \sbox{\myboxA}{$\m@th#2$}%
+    \setbox\myboxB\null% Phantom box
+    \ht\myboxB=\ht\myboxA%
+    \dp\myboxB=\dp\myboxA%
+    \wd\myboxB=#1\wd\myboxA% Scale phantom
+    \sbox\myboxB{$\m@th\overline{\copy\myboxB}$}%  Overlined phantom
+    \setlength\mylenA{\the\wd\myboxA}%   calc width diff
+    \addtolength\mylenA{-\the\wd\myboxB}%
+    \ifdim\wd\myboxB<\wd\myboxA%
+       \rlap{\hskip 0.5\mylenA\usebox\myboxB}{\usebox\myboxA}%
+    \else
+        \hskip -0.5\mylenA\rlap{\usebox\myboxA}{\hskip 0.5\mylenA\usebox\myboxB}%
+    \fi}
+\makeatother
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\printanswers
+
+\begin{document}
+
+
+\abovedisplayskip=12pt
+\belowdisplayskip=12pt
+\abovedisplayshortskip=7pt
+\belowdisplayshortskip=10pt
+\allowdisplaybreaks
+
+\setlength{\parindent}{18pt}
+
+\title{Quantitative Methods: Finals}
+\author{Raymond Luo}
+\date{\today}
+\maketitle
+
+\noindent{\bf Question 1:} Consider the rescaled random walk in discrete time $B^n(t) = \frac{1}{\sqrt{n}}
+  \sum^{nt}_{k=1} X_k$ where $X_k$ is the increment of the random walk that goes up with probability $p = \frac{1}{2}
+  (1+\mu/\sqrt{n})$ and down with probability $1-p$, where $\mu$ is a given real number.
+    \begin{align*}
+      X_k &=
+        \begin{cases}
+          +1 & \text{ with probability } p \\
+          -1 & \text{ with probability } 1-p
+        \end{cases}
+    \end{align*}
+    \begin{enumerate}
+      \item Compute $\ee[X_k]$
+        \begin{solution}
+          \begin{align*}
+            \ee[X_k] &= (+1) \cdot \pp[X_k = 1] + (-1) \cdot \pp[X_k = -1] \\
+            &= \frac{1}{2}(1+\mu/\sqrt{n}) - (1 - \frac{1}{2}(1+\mu/\sqrt{n})) = 1 + \mu/\sqrt{n} - 1 = \mu/\sqrt{n}
+          \end{align*}
+        \end{solution}
+      \item Compute $var[X_k]$
+        \begin{solution}
+          \begin{align*}
+            var[X_k] &= (+1)^2 \cdot \pp[X_k = 1] + (-1)^2 \cdot \pp[X_k = -1] \\
+            &= \frac{1}{2}(1+\mu/\sqrt{n}) + (1 - \frac{1}{2}(1+\mu/\sqrt{n})) = 1
+          \end{align*}
+        \end{solution}
+      \item Argue that, as $n \rightarrow +\infty$, the process $B^n(t)$ converges to a Brownian motion with drift rate $\mu$
+      \begin{solution}
+        We first note that for fixed $n \in \nn, t \in \rr_{\geq0}$, that:
+        \begin{align*}
+          \ee[B^n(t)] &= \ee[\frac{1}{\sqrt{n}} \sum^{nt}_{k=1} X_k] = \frac{1}{\sqrt{n}} \sum^{nt}_{k=1} \ee[X_k] \\
+          &= \frac{1}{\sqrt{n}} \sum^{nt}_{k=1} \mu/\sqrt{n} = \mu \cdot t
+        \end{align*}
+        And that:
+        \begin{align*}
+          Var[B^n(t)] = Var[\frac{1}{\sqrt{n}} \sum^{nt}_{k=1} X_k] = (\frac{1}{\sqrt{n}})^2 Var[X_k] = t
+        \end{align*}
+        By the central limit theorem, as $nt \rightarrow \infty$ for sufficiently large $n$,
+        $B^n(t)$ converges to a normal distribution with mean $\mu \cdot t$ and variance $t$. \\
+        Moreover note that:
+          \begin{itemize}
+            \item $B^n(0) = \frac{1}{\sqrt{n}} \sum_{\emptyset} X_k = 0$,
+            \item For $t_1 > t_2 > t_3 > t_4 \geq 0$, $B^n(t_1) - B^n(t_2) = \frac{1}{\sqrt{n}} \sum^{nt_1}_{k = nt_2} X_k$ is independent
+            of $B^n(t_3) - B^n(t_4) = \frac{1}{\sqrt{n}} \sum^{nt_3}_{k = nt_4} X_k$ following the independence of $\{X_i\}_{i \in \nn}$.
+            \item For $t_1 > t_2 > 0$, $B^n(t_1) - B^n(t_2) = \frac{1}{\sqrt{n}} \sum^{nt_1}_{k = nt_2} X_k = N$ and this converges in distribution
+              by the Central Limit Theorem for sufficiently big $n$, $nt \rightarrow \infty$ and that $\ee[N] = \mu \cdot (t_1 - t_2)$, $Var[N] =(t_1 - t_2)$
+          \end{itemize}
+      \end{solution}
+    \end{enumerate}
+
+\noindent{\bf Question 2:}
+  \par{We consider a standard Brownian motion $W$.}
+
+  \begin{enumerate}
+    \item Is the process $t \in [0, +\infty) \rightarrow W(ct^2)$, where $c$ is a positive constant, a standard Brownian motion? Justify your answer.
+      \begin{solution}
+        No, the increments do not have variance equal to the length in time of the increment.
+        For $s,t > 0$, we have that $a = c(t+s)^2, b = ct^2$, $W(c(t+s)^2) - W(ct^2) = W(a) - W(b) \sim N(0, a-b)$. Note that $a-b = c\bigg((t+s)^2 - t^2 \bigg)
+        = c(t + s + t)(t + s - t) = c(2ts + s^2) \neq s = (t+s) - t$
+      \end{solution}
+    \item Is $t \in [0, +\infty) \rightarrow \sqrt{t}W(1)$ a standard Brownian motion? Justify your answer.
+      \begin{solution}
+        No, this process does not have independent increments. Note that for $t_1 > t_2 > 0, \sqrt{t_1}W(1) - \sqrt{t_2}W(1)
+        = W(1)(\sqrt{t_1} - \sqrt{t_2}) \sim N(0, t - s)$ but for $s_1 > s_2 > t_1, \sqrt{s_1}W(1) - \sqrt{s_2}W(1) = \frac{\sqrt{t_1} - \sqrt{t_2}}
+        {\sqrt{s_1} - \sqrt{s_2}}W(1)$ is clearly dependent on the previous increment.
+      \end{solution}
+  \end{enumerate}
+
+\noindent{\bf Question 3:}
+  \par{Consider the Stochastic Differential Equation}
+    \begin{equation*}
+      dX(t) = \alpha (\nu - \ln{X(t)})X(t)dt + \sigma X(t) dW(t), X(0)=x
+    \end{equation*}
+  where $W(t)$ is a standard Brownian motion and $\alpha, \nu, \sigma$ and $x$ are positive real numbers.
+
+  \begin{enumerate}
+    \item Consider the process $Y(t) = \ln(X(t))$; Find the Stochastic Differential Equation satisfied by $Y$ by using Ito-Doeblin formula.
+      \begin{solution}
+        We note that:
+          \begin{align*}
+            dY(t) &= \frac{\partial}{\partial x}Y dX +  \frac{1}{2} \frac{\partial^2}{\partial x^2}Y (dX)^2 \\
+            &= \frac{1}{X(t)} dX + \frac{1}{2} \frac{\partial}{\partial x} \frac{1}{X(t)} \bigg(\sigma^2 X^2(t) dt \bigg) \\
+            &= \frac{1}{X(t)} dX - \frac{\sigma^2}{2} dt \\
+            &=  \alpha (\nu - \ln{X(t)})dt + \sigma dW(t) - \frac{\sigma^2}{2} dt \\
+            &=  \Bigg(\alpha (\nu - Y(t)) - \frac{\sigma^2}{2} \Bigg)dt + \sigma dW(t)
+          \end{align*}
+      \end{solution}
+    \item Show by using Ito-Doeblin formula, that the solution of the above SDE is given by
+      \begin{equation*}
+        Y(t) = e^{-\alpha t} \ln{x} + (\nu - \frac{\sigma^2}{2\alpha})(1-e^{-\alpha t}) + \sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s)
+      \end{equation*}
+      \begin{solution}
+        Let $f(x,t) = e^{\alpha t}\cdot x$ so that by the Ito-Doeblin formula, we have that:
+        \begin{align*}
+          d(f(Y(t),t)) &= f_t dt + f_x dx + \frac{1}{2} f_{xx} (dx)^2 \\
+          &= e^{\alpha t}Y(t) dt + e^{\alpha t}dY + \frac{1}{2} e^{\alpha t} \cdot 0 (dY)^2 \\
+          &= e^{\alpha t}Y(t) dt + e^{\alpha t}\Bigg[\bigg(\alpha (\nu - Y(t)) - \frac{\sigma^2}{2} \bigg)dt + \sigma dW(t)\Bigg] \\
+          &= e^{\alpha t} \alpha \bigg(\nu - \frac{\sigma^2}{2\alpha} \bigg)dt + e^{\alpha t}\sigma dW(t)
+        \end{align*}
+        We then integrate the above expression:
+        \begin{align*}
+          \int^t_0 d(e^{\alpha s} Y(s)) ds
+          = \int^t_0 e^{\alpha s} \alpha (\nu - \frac{\sigma^2}{2\alpha})ds + \int^t_0 e^{\alpha s}\sigma dW(s) \\
+          e^{-\alpha t}Y(t) - e^{0}Y(0) = \bigg[e^{\alpha s}(\nu - \frac{\sigma^2}{2\alpha}) \bigg]^t_0 + \int^t_0 \sigma e^{\alpha s} dW(s) \\
+          e^{\alpha t}Y(t) = Y(0) + (e^{\alpha t} - 1)(\nu - \frac{\sigma^2}{2\alpha}) + \int^t_0 \sigma e^{\alpha s} dW(s) \\
+          Y(t) = e^{-\alpha t}\ln{x} + (1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha}) + \sigma e^{-\alpha t}\int^t_0  e^{\alpha s} dW(s)
+         \end{align*}
+      \end{solution}
+    \item Deduce the solution $X(t)$ of the first SDE
+      \begin{solution}
+        From $Y(t) = \ln{(X(t))} \Rightarrow X(t) = e^{Y(t)}$, we have that:
+        \begin{align*}
+          X(t) = \exp\bigg\{e^{-\alpha t}\ln{x} + (1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha}) + \sigma e^{-\alpha t}\int^t_0  e^{\alpha s} dW(s) \bigg\}
+        \end{align*}
+      \end{solution}
+    \item What is the distribution of
+      \begin{equation*}
+        \sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s)
+      \end{equation*}
+      Give also its mean and variance.
+      \begin{solution}
+        We note that $\int^t_0 e^{\alpha s} dW(s)$ has normal distribution as a sum of normal distributions over some partition of $[0,t]$ with mesh
+        approaching 0. \\
+        $\ee[\sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s)] = \sigma e^{-\alpha t} \ee[\int^t_0 e^{\alpha s}dW(s)] = \sigma e^{-\alpha t} \cdot 0 = 0$\\
+        $Var[\sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s)] = \sigma^2 e^{-2\alpha t} Var[\int^t_0 e^{\alpha s}dW(s)] \\
+        = \sigma^2 e^{-2\alpha t} \bigg(\ee[(\int^t_0 e^{\alpha s}dW(s))^2] - \ee[\int^t_0 e^{\alpha s}dW(s)]^2 \bigg).$ \\
+        By ito's isometry, the above expression becomes: \\
+        $Var[\sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s)]
+        = \sigma^2 e^{-2\alpha t} \bigg(\ee[\int^t_0 e^{2\alpha s} ds] - \ee[\int^t_0 e^{\alpha s}dW(s)]^2 \bigg) \\
+        = \sigma^2 e^{-2\alpha t} \bigg(\ee[\int^t_0 e^{2\alpha s} ds] - 0^2 \bigg) =
+        \sigma^2 e^{-2\alpha t} \bigg(\ee[[\frac{1}{2\alpha}e^{2\alpha s}]^t_0] \bigg) \\
+        = \frac{\sigma^2}{2\alpha} e^{-2\alpha t} \bigg(e^{2\alpha t} - 1 \bigg) = \frac{\sigma^2}{2\alpha}\big(1 - e^{-2\alpha t} \big)$
+
+      \end{solution}
+    \item Deduce
+      \begin{equation*}
+        \ee[\exp\{\sigma e^{-\alpha t} \int^t_0 e^{\alpha s} dW(s)\}]
+      \end{equation*}
+      \begin{solution}
+        We note that from the previous subproblem that $X' = \sigma e^{-\alpha t}\int^t_0 e^{\alpha s}dW(s) \sim N\big(0, \frac{\sigma^2}{2\alpha}(1 - e^{-2\alpha t}) \big)$.
+        It then follows that $\ee[\exp\{\sigma e^{-\alpha t} \int^t_0 e^{\alpha s} dW(s)\}] = \phi(1)$ where $\phi$ is the moment generating function of $X'$.
+        We know that the moment generating function of a normal distribution with parameters mean $\mu$ and variance $\sigma^2$ is
+        $\phi(t) = \exp\{\mu t + \frac{\sigma^2 t^2}{2}\}$ so it follows that: \\
+        $\ee[\exp\{\sigma e^{-\alpha t} \int^t_0 e^{\alpha s} dW(s)\}] = \exp\{\frac{\sigma^2}{4\alpha}\big(1 - e^{-2\alpha t} \big) \}$
+      \end{solution}
+    \item Deduce $\ee[X(t)]$
+      \begin{solution}
+        We have that:
+          \begin{align*}
+            \ee[X(t)]
+            &= \ee\bigg[\exp\bigg\{e^{-\alpha t}\ln{x} + (1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha}) + \sigma e^{-\alpha t}\int^t_0  e^{\alpha s} dW(s) \bigg\}\bigg] \\
+            &= \exp\{e^{-\alpha t}\ln{x}+(1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha})\}\cdot\ee[\exp\{\sigma e^{-\alpha t} \int^t_0 e^{\alpha s} dW(s)\}] \\
+            &= \exp\{e^{-\alpha t}\ln{x}+(1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha})\}\cdot\exp\{\frac{\sigma^2}{4\alpha}\big(1 - e^{-2\alpha t} \big) \} \\
+            &= \exp\{e^{-\alpha t}\ln{x}+(1 - e^{-\alpha t})(\nu - \frac{\sigma^2}{2\alpha})\}+\frac{\sigma^2}{4\alpha}\big(1 - e^{-2\alpha t} \big)\}
+          \end{align*}
+      \end{solution}
+  \end{enumerate}
+
+\noindent{\bf Question 4:}
+  \par{The price of a share of a dividend-paying stock, $S(t)$, satisfies the Stochastic Differential Equation}
+  \begin{equation*}
+    dS(t) = (r-\delta)S(t)dt + \sigma S(t)d\tilde{W}(t)
+  \end{equation*}
+  where $\tilde{W}$ is a standard Brownian motion under the risk-neutral probability measure $\tilde{\pp}$, $r > 0$ is the risk free rate,
+  $\delta$ is the continuous-time dividend rate, and $\sigma > 0$ is the volatility coefficient. Furthermore, the dividend is deposited in the bank account that
+  pays the rate $r$.
+
+  \begin{enumerate}
+    \item Give a closed formula for the stock price at time $T, S(T),$ in terms of the stock price at time $t, S(t)$.
+      \begin{solution}
+        We have that:
+        \begin{align*}
+          dS(s) &= (r-\delta)S(s)ds + \sigma S(s)d\tilde{W}(s)
+        \end{align*}
+        We have by Ito's lemma that:
+        \begin{align*}
+          d(\ln(S(t))) = \frac{1}{S} dS(t) - \frac{1}{2}\cdot \frac{1}{S^2} (dS(t))^2 = \frac{dS(t)}{S} - \frac{\sigma^2 S^2 dt}{S^2} \\
+          d(\ln(S(t))) = \frac{(r-\delta)S(t)dt + \sigma S(t)d\tilde{W}(t)}{S} - \sigma^2 dt \\
+          d(\ln(S(t))) = (r - \delta - \frac{\sigma^2}{2})dt + \sigma d\tilde{W}(t) \\
+          S(t) = S(0)\exp\{(r - \delta - \frac{\sigma^2}{2})t + \sigma \tilde{W}(t)\}
+        \end{align*}
+      \end{solution}
+    \item Show that $e^{-(r-\delta)t}S(t)$ is a martingale under $\tilde{\pp}$
+      \begin{solution}
+        Let $f(x,t) = e^{-(r-\delta)t}x$, by Ito's Lemma, we have that: \\
+        $d(e^{-(r-\delta)t}S(t)) = -(r-\delta)e^{-(r-\delta)t}S(t) dt + e^{-(r-\delta)t} dS + \frac{1}{2}\cdot 0 (dS)^2 \\
+        =-(r-\delta)e^{-(r-\delta)t}S(t) dt + e^{-(r-\delta)t} \big( (r-\delta)S(t)dt + \sigma S(t)d\tilde{W}(t) \big) \\
+        = 0 \cdot dt + e^{-(r-\delta)t} \sigma S(t)d\tilde{W}(t) $ \\
+        As there is no drift-term, we have that $e^{-(r-\delta)t}S(t)$ is a martingale.
+      \end{solution}
+    \item Write the dynamics of the self-financing hedging portfolio which is invested in the bank account and the dividend paying underlying asset. We denote
+      by $X(t)$, the value at time $t$ of the hedging portfolio. Identify the martingale.
+        \begin{solution}
+        We choose a portfolio with $\Delta(t)$ shares of stock and $X(t) - \Delta(t)S(t)$ investments in market account.
+        Note that at time $t$, we also have $\delta \Delta(t) S(t)$ dividend so that the evolution of the portfolio is now:
+        \begin{align*}
+          dX(t) &= \Delta(t)dS(t) + r(X(t) - \Delta(t)S(t))dt + \delta\Delta S(t)dt \\
+          &= \Delta(t)\big((r - \delta)S(t) dt + \sigma S(t) d\tilde{W}(t)\big) + r(X(t) - \Delta(t)S(t))dt + \delta\Delta S(t)dt \\
+          &= rX(t)dt + \Delta(t)(r - r)S(t)dt + \Delta(t)\sigma S(t)d\tilde{W}(t) \\
+          &= rX(t)dt + \Delta(t)\sigma S(t)d\tilde{W}(t)
+        \end{align*}
+        If we denote $f(x,t) = e^{-r(T-t)}x$, by Ito's Lemma, we have that: \\
+        $d(e^{-rt}X(t)) = -re^{-rt}X(t)dt + e^{-rt}dX(t) + \frac{1}{2} \cdot 0 (dX(t))^2 \\
+        = -re^{-rt}X(t)dt + e^{-rt}\big(rX(t)dt + \Delta(t)\sigma S(t)d\tilde{W}(t)\big) \\
+        = e^{-rt}\Delta(t)\sigma S(t) d\tilde{W}(t)$. \\
+        From this, we note that $e^{-rt}X(t)$, the discounted portfolio value, is a martingale.
+        \end{solution}
+    \item Derive an analytical formula for the price $c(t,s)$ of the European call. Show your work.
+      \begin{solution}
+        As our self-financing hedging portfolio satisfies $X(t) = c(t,s)$ for all $0 \leq t \leq T$, we have risk neutral
+        pricing formula: \\
+        $T = 0$ and $0 \leq t < T$, \\
+        \begin{align*}
+          \ee[e^{-rT}X(T) \mid S(t) = s] = X(t) \\
+          \ee[e^{-rT}(S(T) - K)^+ \mid S(t) = s] = X(t) \\
+          X(t) = \ee[(e^{-rt}S(T) - Ke^{-rT})^+ \mid S(t) = s] \\
+        \end{align*}
+        Note that we have that under the risk neutral measure $\tilde{\pp}$, the stock price is $S(T) = S(t)\exp\{ \sigma
+        (\tilde{W}(T) - \tilde{W}(t)) + (r - \delta - \frac{1}{2}\sigma^2)(T-t)\}$. If we define $Y = -\frac{\tilde{W}(T) - \tilde{W}(t)}{\sqrt{T-t}}$,
+        we get $S(T) = S(t)\exp\{ -\sigma\sqrt{T-t} Y+(r - \delta - \frac{1}{2}\sigma^2)(T-t) \}$. From this, we have that:
+        \begin{align*}
+          &X(t) = \ee[(e^{-r(T-t)}(S(T) - Ke^{-rT})^+ \mid S(t) = s] \\
+          &= \tilde{\mathbb{E}}[\exp(-r(T-t))\times( s\exp\{ -\sigma\sqrt{T-t} Y+(r - \delta - \frac{1}{2}\sigma^2)(T-t) \} - K)^+] \\
+          &= \frac{1}{\sqrt{2\pi}} \int_{\rr} \exp(-r(T-t))\times( s\exp\{ -\sigma\sqrt{T-t} Y+(r - \delta - \frac{1}{2}\sigma^2)(T-t) \} - K)^+\exp(-\frac{1}{2}y^2) dy
+        \end{align*}
+        Note that $S(T) - K > 0 \Rightarrow s\exp\{ -\sigma\sqrt{T-t} Y+(r - \delta - \frac{1}{2}\sigma^2)(T-t) \} > K$. This is equivalent to
+        $y < \frac{1}{\sigma\sqrt{T-t}}[\ln{\frac{s}{K}}+(r-\delta-\frac{\sigma^2}{2})(T-t)] := d\_$.
+        We then have:
+        \begin{align*}
+          c(t,s) &= \frac{1}{\sqrt{2\pi}}\int^{d\_}_{-\infty} s\exp\{-\sigma\sqrt{T-t} Y+(r-\delta-\frac{1}{2}\sigma^2)(T-t)-\frac{1}{2}y^2\}dy \\
+          &- \frac{1}{2\pi} \int^{d\_}_{-\infty} \exp(-r(T-t)) K \exp(-\frac{1}{2}y^2) \\
+          &= \frac{s\exp(-\delta(T-t))}{\sqrt{2\pi}} \int^{d\_}_{-\infty} \exp\{-\frac{1}{2}(y + \sigma\sqrt{T-t})^2\} \\
+          &- \exp(-r(T-t))KN(d_(T-t,s)) \\
+          &= \frac{s\exp(-\delta(T-t))}{\sqrt{2\pi}} \int^{d\_+\sigma\sqrt{T-t}}_{-\infty} \exp\{-\frac{1}{2}z^2\} dz \\
+          &- \exp(-r(T-t))KN(d_(T-t,s)) \\
+          &= s\exp(-\delta(T-t))N(d_{+}) - K\exp(-r(T-t))N(d\_)
+        \end{align*}
+        Where $d\_ = \frac{1}{\sigma\sqrt{T-t}}[\ln{\frac{s}{K}}+(r-\delta-\frac{\sigma^2}{2})(T-t)], d_{+} = d\_ + \sigma\sqrt{T-t}$
+      \end{solution}
+  \end{enumerate}
+
+\end{document}
